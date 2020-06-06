@@ -1,29 +1,31 @@
 {
   "files": {
     "main.css": "/movies-app/static/css/main.1f1b4a52.chunk.css",
-    "main.js": "/movies-app/static/js/main.798a3ed8.chunk.js",
-    "main.js.map": "/movies-app/static/js/main.798a3ed8.chunk.js.map",
+    "main.js": "/movies-app/static/js/main.99bd82ac.chunk.js",
+    "main.js.map": "/movies-app/static/js/main.99bd82ac.chunk.js.map",
     "runtime-main.js": "/movies-app/static/js/runtime-main.48b6978c.js",
     "runtime-main.js.map": "/movies-app/static/js/runtime-main.48b6978c.js.map",
     "static/css/2.f87e9f44.chunk.css": "/movies-app/static/css/2.f87e9f44.chunk.css",
-    "static/js/2.765ca992.chunk.js": "/movies-app/static/js/2.765ca992.chunk.js",
-    "static/js/2.765ca992.chunk.js.map": "/movies-app/static/js/2.765ca992.chunk.js.map",
+    "static/js/2.8106cec9.chunk.js": "/movies-app/static/js/2.8106cec9.chunk.js",
+    "static/js/2.8106cec9.chunk.js.map": "/movies-app/static/js/2.8106cec9.chunk.js.map",
     "index.html": "/movies-app/index.html",
-    "precache-manifest.4a597e8e15b7d9f452f398b2f8ee34a9.js": "/movies-app/precache-manifest.4a597e8e15b7d9f452f398b2f8ee34a9.js",
+    "precache-manifest.076a5d78148d5c57871e561dc9f47013.js": "/movies-app/precache-manifest.076a5d78148d5c57871e561dc9f47013.js",
     "service-worker.js": "/movies-app/service-worker.js",
     "static/css/2.f87e9f44.chunk.css.map": "/movies-app/static/css/2.f87e9f44.chunk.css.map",
     "static/css/main.1f1b4a52.chunk.css.map": "/movies-app/static/css/main.1f1b4a52.chunk.css.map",
-    "static/js/2.765ca992.chunk.js.LICENSE.txt": "/movies-app/static/js/2.765ca992.chunk.js.LICENSE.txt",
+    "static/js/2.8106cec9.chunk.js.LICENSE.txt": "/movies-app/static/js/2.8106cec9.chunk.js.LICENSE.txt",
     "static/media/check.svg": "/movies-app/static/media/check.e9716c46.svg",
+    "static/media/dark.svg": "/movies-app/static/media/dark.023a0a49.svg",
     "static/media/home.svg": "/movies-app/static/media/home.70124145.svg",
+    "static/media/light.svg": "/movies-app/static/media/light.e738a8e1.svg",
     "static/media/search.svg": "/movies-app/static/media/search.5437e521.svg",
     "static/media/watch.svg": "/movies-app/static/media/watch.4540d5f0.svg"
   },
   "entrypoints": [
     "static/js/runtime-main.48b6978c.js",
     "static/css/2.f87e9f44.chunk.css",
-    "static/js/2.765ca992.chunk.js",
+    "static/js/2.8106cec9.chunk.js",
     "static/css/main.1f1b4a52.chunk.css",
-    "static/js/main.798a3ed8.chunk.js"
+    "static/js/main.99bd82ac.chunk.js"
   ]
 }
