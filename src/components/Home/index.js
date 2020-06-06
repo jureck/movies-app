@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import styled from 'styled-components';
 import { theme } from '../../themes/GlobalTheme';
 import SearchBar from './SearchBar';
 import Menu from '../Menu/index';
 import { apiAddress, apiKey } from '../../services/api/config';
 import { v1 as uuid } from 'uuid';
+import { ThemeContext } from '../../context/ThemeContext';
 
 const Main = styled.div`
     display: flex;
@@ -14,7 +15,7 @@ const Main = styled.div`
 `
 const HeaderText = styled.p`
    font-size: ${theme.fonts.xl};
-   color: ${theme.colors.accent};
+   color: ${({ currentTheme }) => theme[currentTheme].colors.syntax};
    text-align: center;
 `
 const getDataFromApi = async (title) => {
@@ -25,6 +26,8 @@ const getDataFromApi = async (title) => {
 }
 
 const Home = () => {
+    const {currentTheme} = useContext(ThemeContext);
+
     useEffect(() => {
         if(!localStorage.getItem("uid")) {
             const uid = uuid();
@@ -38,7 +41,7 @@ const Home = () => {
             <Menu 
                 current="Home"
             />
-            <HeaderText>
+            <HeaderText currentTheme={currentTheme}>
                 Start searching
             </HeaderText>
             <SearchBar getDataFromApi={getDataFromApi} />

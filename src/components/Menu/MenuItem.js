@@ -1,30 +1,32 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 import { theme } from '../../themes/GlobalTheme';
+import { ThemeContext } from '../../context/ThemeContext';
 
 const Item = styled.a`
     text-decoration: none;
     width: 100%;
     height: 57px;
-    color: ${theme.colors.light};
+    color: ${({ currentTheme }) => theme[currentTheme].colors.syntax};
     font-size: ${theme.fonts.s};
     line-height: 57px;
     display: flex;
     flex-direction: row;
     align-items: center;
-    background-color: ${({ current, name }) => current === name ? `${theme.colors.primary}` : "none"};
+    background-color: ${({ current, name, currentTheme }) => current === name ? `${theme[currentTheme].colors.primary}` : "none" };
+    font-weight: ${({ current, name }) => current === name ? "600" : "500"};
 
     &:first-child {
         margin-top: 80px;
     }
 
     &:hover {
-        background-color: ${theme.colors.primary};
+        background-color: ${({ currentTheme }) => theme[currentTheme].colors.primary};
     }
 `
 const Icon = styled.img`
     height: 26px;
-    margin: 0px 10px;
+    margin: 0px 20px;
 `
 const Name = styled.p`
     height: 100%;
@@ -32,9 +34,10 @@ const Name = styled.p`
 `
 
 const MenuItem = ({ img, name, current, path }) => {
+    const {currentTheme} = useContext(ThemeContext);
 
     return ( 
-        <Item href={path} current={current} name={name}>
+        <Item currentTheme={currentTheme} href={path} current={current} name={name}>
                 <Icon
                     src={require(`../../assets/icons/${img}`)}
                 />    

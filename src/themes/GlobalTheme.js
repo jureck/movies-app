@@ -1,11 +1,23 @@
 export const theme = {
+    light: {
+        colors: {
+            primary: '#EDEDED',
+            secondary: '#FCFCFC',
+            syntax: '#121212',
+            altSyntax: '#4A4A4A',
+        }
+    },
+    dark: {
+        colors: {
+            primary: '#202627',
+            secondary: '#2C3335',
+            syntax: '#FFFFFF',
+            altSyntax: '#858585',
+        }
+    },
     colors: {
-        primary: '#202627',
-        secondary: '#2C3335',
         accent: '#FFCF72',
         accentAlt: '#C29A4C',
-        light: '#FFFFFF',
-        darkerLight: '#858585',
         delete: '#D71D1D',
         add: '#33F86A'
     },

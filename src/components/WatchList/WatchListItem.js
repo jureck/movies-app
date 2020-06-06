@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 import { db } from '../../services/firebase/config';
 import { theme } from '../../themes/GlobalTheme';
+import { ThemeContext } from '../../context/ThemeContext';
 
 const Item = styled.div`
     width: 90%;
     min-height: 100px;
-    background-color: ${theme.colors.secondary};
+    background-color: ${({ currentTheme }) => theme[currentTheme].colors.secondary};
     padding: 10px;
     margin-top: 20px;
     border-radius: ${theme.properties.radiusSmall};
@@ -23,19 +24,21 @@ const Title = styled.p`
     flex: 2;
     margin: 0;
     font-size: ${theme.fonts.m};
+    font-weight: 700;
 `
 const Delete = styled.button`
     border: 0;
-    background-color: ${theme.colors.secondary};
+    background-color: ${({ currentTheme }) => theme[currentTheme].colors.secondary};
     color:  ${theme.colors.delete};
     transition: all .3s ease-in-out;
 
     &:hover {
-        background-color: #202328;
+        background-color: ${({ currentTheme }) => theme[currentTheme].colors.primary};
     }
 `
 const Year = styled.p`
-    color: ${theme.colors.light};
+    color: ${({ currentTheme }) => theme[currentTheme].colors.syntax};
+    color: ${theme.colors.syntax};
     font-size: ${theme.fonts.s};
     margin: 0;
 `
@@ -44,11 +47,11 @@ const DetailsWrapper = styled.div`
     justify-content: left;
 `
 const Duration = styled.p`
-    color: ${theme.colors.light};
+    color: ${({ currentTheme }) => theme[currentTheme].colors.syntax};
     margin-right: 30px;
 `
 const Genres = styled.p`
-    color: ${theme.colors.light};
+    color: ${({ currentTheme }) => theme[currentTheme].colors.syntax};
 `
 
 
@@ -62,25 +65,26 @@ const deleteFromList = (title, docs) => {
 } 
 
 const WatchListItem = ({ title, year, duration, genres, docs }) => {
+    const {currentTheme} = useContext(ThemeContext);
 
     return (
-        <Item>
+        <Item currentTheme={currentTheme}>
             <TitleWrapper>
                 <Title>
                     {title}
                 </Title>
-                <Delete onClick={() => deleteFromList(title, docs)}>
+                <Delete currentTheme={currentTheme} onClick={() => deleteFromList(title, docs)}>
                     DELETE
                 </Delete>
             </TitleWrapper>
-            <Year>
+            <Year currentTheme={currentTheme}>
                 {year}
             </Year>
             <DetailsWrapper>
-                <Duration>
+                <Duration currentTheme={currentTheme}>
                     {duration}
                 </Duration>
-                <Genres>
+                <Genres currentTheme={currentTheme}>
                     {genres}
                 </Genres>
             </DetailsWrapper>

@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import styled from 'styled-components';
 import { basename } from '../../App';
 import { theme } from '../../themes/GlobalTheme';
 import MenuItem from './MenuItem';
+import { ThemeContext } from '../../context/ThemeContext';
+import SunImg from '../../assets/icons/light.svg';
+import MoonImg from '../../assets/icons/dark.svg';
 
 const MainMenu = styled.div`
-    background-color: ${theme.colors.secondary};
+    background-color: ${({ currentTheme }) => theme[currentTheme].colors.secondary};
     width: 60%;
     height: 100%;
     position: fixed;
@@ -22,10 +25,10 @@ const MenuCloser = styled.div`
     display: block;
     position: fixed;
     top: 0;
-    left: ${({ isOpen }) => isOpen ? "60%" : "-100%" };
-    width: 40%;
+    left: ${({ isOpen }) => isOpen ? "0" : "-100%" };
+    width: 100%;
     height: 100%;
-    z-index: 100;
+    z-index: 99;
     transition: all .2s ease-in-out;
 `
 const TopBar = styled.div`
@@ -34,9 +37,10 @@ const TopBar = styled.div`
     justify-content: flex-start;
     height: 50px;
     width: 100%;
+    background-color: ${({ currentTheme }) => theme[currentTheme].colors.primary};
 `
 const CurrentPage = styled.p`
-    color: ${theme.colors.light};
+    color: ${({ currentTheme }) => theme[currentTheme].colors.syntax};
     font-size: ${theme.fonts.m};
     font-weight: 700;
     height: 50px;
@@ -53,7 +57,7 @@ const HamburgerInner = styled.div`
     width: 36px;
     height: 3px;
     margin-top: 15px;
-    background-color: white;
+    background-color: ${({ currentTheme }) => theme[currentTheme].colors.syntax};
     position: absolute;
 
     &::before, &::after {
@@ -61,7 +65,7 @@ const HamburgerInner = styled.div`
         display: block;
         width: 36px;
         height: 3px;
-        background-color: white;
+        background-color: ${({ currentTheme }) => theme[currentTheme].colors.syntax};
         position: absolute;
     }
 
@@ -73,19 +77,45 @@ const HamburgerInner = styled.div`
         margin-top: 14px;
     }
 `
+const ThemeImg = styled.img`
+    display: inline-block;
+    margin-left: 5px;
+    position: absolute;
+    top: 18px;
+`
+const ThemeSwitcher = styled.div`
+    color: ${({ currentTheme }) => theme[currentTheme].colors.syntax};
+    position: absolute;
+    bottom: 0;
+    font-weight: 700;
+    left: 0;
+    width: 90%;
+    text-align: center;
+    height: 60px;
+    cursor: pointer;
+    line-height: 60px;
+`
+
+
+const ToggleTheme = (currentTheme, setCurrentTheme) => {
+    const newTheme = currentTheme === "light" ? "dark" : "light";
+    setCurrentTheme(newTheme);
+    localStorage.setItem('theme', newTheme);
+}
 
 const Menu = ({ current }) => {
+    const {currentTheme, setCurrentTheme} = useContext(ThemeContext);
     const [isOpen, setIsOpen] = useState(false);
 
     return ( 
-            <TopBar>
+            <TopBar currentTheme={currentTheme}>
                 <Hamburger onClick={() => setIsOpen(!isOpen)}>
-                    <HamburgerInner />
+                    <HamburgerInner currentTheme={currentTheme}/>
                 </Hamburger>
-                <CurrentPage>
+                <CurrentPage currentTheme={currentTheme} >
                     {current}
                 </CurrentPage>
-                <MainMenu isOpen={isOpen}>
+                <MainMenu currentTheme={currentTheme} isOpen={isOpen}>
                     <MenuItem 
                         name="Home"
                         img="home.svg"
@@ -98,6 +128,15 @@ const Menu = ({ current }) => {
                         path={`${basename}/#/watchlist/`}
                         current={current}
                     />
+                    <ThemeSwitcher onClick={() => ToggleTheme(currentTheme, setCurrentTheme)} currentTheme={currentTheme}>
+                        Toggle theme
+                        {currentTheme === "light" ? 
+                            <ThemeImg src={MoonImg}/> 
+                                :
+                            <ThemeImg src={SunImg}/> 
+                        }
+                        
+                    </ThemeSwitcher>       
                 </MainMenu>
                 <MenuCloser 
                     onClick={() => setIsOpen(!isOpen)}

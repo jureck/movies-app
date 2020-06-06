@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import styled from 'styled-components';
 import { theme } from '../../themes/GlobalTheme';
 import CheckImg from '../../assets/icons/check.svg';
 import { db } from '../../services/firebase/config';
+import { ThemeContext } from '../../context/ThemeContext';
 
 const Item = styled.div`
     display: ${({ isEmpty }) => isEmpty ? "none" : "flex" };
     width: 90%;
     min-height: 100px;
-    background-color: ${theme.colors.secondary};
+    background-color: ${({ currentTheme }) => theme[currentTheme].colors.secondary};
     padding: 10px;
     margin-top: 20px;
     border-radius: ${theme.properties.radiusSmall};
@@ -27,6 +28,7 @@ const Title = styled.p`
     color: ${theme.colors.accent};
     flex: 2;
     margin: 0;
+    font-weight: 700;
     font-size: ${theme.fonts.m};
 `
 const Poster = styled.img`
@@ -46,26 +48,29 @@ const Rate = styled.p`
     width: 70px;
     text-align: center;
     padding: 5px;
+    font-weight: 700;
     border-radius: ${theme.properties.radiusSmall};
 `
 
 const Description = styled.p`
-     color: ${theme.colors.light};
+     color: ${theme.colors.syntax};
 `
 const Add = styled.button`
+    font-weight: 700;
     display: ${({ isOnList }) => isOnList ? "none" : "block"};
     height: 30px;
     border: 0;
-    background-color: ${theme.colors.secondary};
+    background-color: ${({ currentTheme }) => theme[currentTheme].colors.secondary};
     color:  ${theme.colors.add};
     transition: all .3s ease-in-out;
     outline: none;
 
     &:hover {
-        background-color: #202328;
+        background-color: ${({ currentTheme }) => theme[currentTheme].colors.primary};
     }
 `
 const Added = styled.p`
+    font-weight: 700;
     display: ${({ isOnList }) => isOnList ? "block" : "none"};
     height: 25px;
     color:  ${theme.colors.add};
@@ -80,7 +85,7 @@ const Check = styled.img`
     height: 23px;
 `
 const Year = styled.p`
-    color: ${theme.colors.darkerLight};
+    color: ${({ currentTheme }) => theme[currentTheme].colors.altSyntax};
     font-size: ${theme.fonts.s};
     margin: 0;
 `
@@ -89,12 +94,12 @@ const DetailsWrapper = styled.div`
     justify-content: left;
 `
 const Duration = styled.p`
-    color: ${theme.colors.darkerLight};
+    color: ${({ currentTheme }) => theme[currentTheme].colors.altSyntax};
     margin: 0px;
     margin-right: 30px;
 `
 const Genres = styled.p`
-    color: ${theme.colors.darkerLight};
+    color: ${({ currentTheme }) => theme[currentTheme].colors.altSyntax};
     margin: 0px 0px;
 `
 
@@ -114,6 +119,7 @@ const addToList = (movie, uid) => {
 }
 
 const ResultsItem = ({ movie }) => {
+    const {currentTheme} = useContext(ThemeContext);
     const [isEmpty, setIsEmpty] = useState(false);
     const [isOnList, setIsOnList] = useState(false); 
 
@@ -148,14 +154,14 @@ const ResultsItem = ({ movie }) => {
     }, [title, uid]);
 
     return ( 
-        <Item isEmpty={isEmpty}>
+        <Item isEmpty={isEmpty} currentTheme={currentTheme} >
             <Poster src={movie.img}/>
             <TextWrapper>
                 <TitleWrapper>
                     <Title>
                         {title}
                     </Title>
-                    <Add isOnList={isOnList} onClick={() => addToList(movie, uid)}>
+                    <Add currentTheme={currentTheme} isOnList={isOnList} onClick={() => addToList(movie, uid)}>
                         ADD TO LIST
                     </Add>
                     <Added isOnList={isOnList}>
@@ -166,17 +172,17 @@ const ResultsItem = ({ movie }) => {
                         isOnList={isOnList}
                     />
                 </TitleWrapper>
-                <Year>
+                <Year currentTheme={currentTheme}>
                     {year}
                 </Year>
                 <Rate>
                     {rate}
                 </Rate>
                 <DetailsWrapper>
-                    <Duration>
+                    <Duration currentTheme={currentTheme}>
                         {duration}
                     </Duration>
-                    <Genres>
+                    <Genres currentTheme={currentTheme}>
                         {genres}
                     </Genres>
                 </DetailsWrapper>

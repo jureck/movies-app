@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 import { theme } from '../../themes/GlobalTheme';
+import { ThemeContext } from '../../context/ThemeContext';
 
 const Error = styled.p`
     font-size: 20vw;
-    color: ${theme.colors.darkerLight};
+    color: ${({ currentTheme }) => theme[currentTheme].colors.altSyntax};
     width: 100%;
     height: 400px;
     text-align: center;
@@ -12,8 +13,9 @@ const Error = styled.p`
 `
 
 const NotFound = () => {
+    const {currentTheme} = useContext(ThemeContext);
     return ( 
-        <Error>404</Error>
+        <Error currentTheme={currentTheme}>404</Error>
     );
 }
 export default NotFound;

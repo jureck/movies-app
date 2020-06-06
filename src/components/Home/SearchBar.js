@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import styled from 'styled-components';
 import SearchIcon from '../../assets/icons/search.svg';
 import ResultsItem from './ResultsItem';
 import { theme } from '../../themes/GlobalTheme';
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import Loader from 'react-loader-spinner';
+import { ThemeContext } from '../../context/ThemeContext';
 
 const SearchBlock = styled.div`
     width: 80%;
@@ -19,7 +20,7 @@ const SearchInput = styled.input`
     height: 100%;
     border: 0px;
     width: 100%;
-    background-color: ${theme.colors.light};
+    background-color: "#FFFFFF";
     border-radius: ${theme.properties.radiusBig};
     outline: none;
     padding: 10px;
@@ -52,7 +53,7 @@ const Form = styled.form`
 `
 const Error = styled.div`
     width: 100%;
-    color: ${theme.colors.light};
+    color: ${({ currentTheme }) => theme[currentTheme].colors.syntax};
     text-align: center;
     font-size: ${theme.fonts.l};
     margin-top: 100px;
@@ -103,6 +104,8 @@ const handleChange = (e, setTitle) => {
 }
 
 const SearchBar = (props) => {
+    const {currentTheme} = useContext(ThemeContext);
+
     const [title, setTitle] = useState('');
     const [movie, setMovie]= useState({
         title: '',
@@ -118,7 +121,7 @@ const SearchBar = (props) => {
     let resultItem = "";
 
     if(resStatus === "empty") {
-        resultItem = <Error> Nothing found :( </Error>
+        resultItem = <Error currentTheme={currentTheme}> Nothing found :( </Error>
 
     } else if(resStatus === "loading") {   
         resultItem = <Loader type="TailSpin" color="#00BFFF" height={200} width={100} timeout={3000} />;
@@ -130,7 +133,7 @@ const SearchBar = (props) => {
         <>
             <SearchBlock>
                 <Form onSubmit={(e) => onSubmit(e, props, title, movie, setMovie, setResStatus)}>
-                    <SearchInput value={title} onChange={(e) => handleChange(e, setTitle)}/>
+                    <SearchInput currentTheme={currentTheme} value={title} onChange={(e) => handleChange(e, setTitle)}/>
                     <SearchButton>
                         <SearchImg src={SearchIcon} />
                     </SearchButton>

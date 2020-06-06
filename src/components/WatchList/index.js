@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import styled from 'styled-components';
 import Menu from '../Menu/index';
 import { theme } from '../../themes/GlobalTheme';
@@ -6,6 +6,7 @@ import WatchListItem from './WatchListItem';
 import { db } from '../../services/firebase/config';
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import Loader from 'react-loader-spinner';
+import { ThemeContext } from '../../context/ThemeContext';
 
 const Main = styled.main`
     display: flex;
@@ -15,13 +16,14 @@ const Main = styled.main`
 
 const Error = styled.div`
     width: 100%;
-    color: ${theme.colors.light};
+    color: ${({ currentTheme }) => theme[currentTheme].colors.syntax};
     text-align: center;
     font-size: ${theme.fonts.l};
     margin-top: 100px;
 `
 
 const WatchList = () => {
+    const {currentTheme} = useContext(ThemeContext);
     const [movies, setMovies] = useState([]);
     const [docs, setDocs] = useState([]);
     const [status, setStatus] = useState('ready');
@@ -70,7 +72,7 @@ const WatchList = () => {
     let listItem = <Loader type="TailSpin" color="#00BFFF" height={400} width={100} timeout={5000} />;
 
     if(status === "empty") {
-        listItem = <Error> Your list is empty :( </Error>
+        listItem = <Error currentTheme={currentTheme} > Your list is empty :( </Error>
     } else {
         listItem =  movies.map(movie => <WatchListItem
                         key={movie.title}
