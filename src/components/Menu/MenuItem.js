@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { theme } from '../../themes/GlobalTheme';
 import { ThemeContext } from '../../context/ThemeContext';
 import { auth } from '../../services/firebase/config';
-import { basename } from '../../services/firebase/config';
+import { basename } from '../../App';
 
 const Item = styled.a`
     text-decoration: none;
