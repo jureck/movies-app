@@ -99,7 +99,7 @@ const handleSubmit = async (e, email, password, setEmailError, setPasswordError)
     auth().signInWithEmailAndPassword(email, password)
     .then((cred) => {
         localStorage.setItem("uid", cred.user.uid);
-        window.location.href = '/'
+        window.location.href = `${basename}/`;
     })
     .catch((err) => {
         if(err.code === "auth/user-not-found") {

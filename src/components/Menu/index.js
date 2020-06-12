@@ -182,7 +182,7 @@ const Menu = ({ current }) => {
                                 <MenuItem
                                     name="Sign out"
                                     img="signout.svg"
-                                    path="#"
+                                    path={`${basename}/`}
                                     current={current}
                                     signOut
                                 />
