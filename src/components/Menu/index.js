@@ -6,6 +6,8 @@ import MenuItem from './MenuItem';
 import { ThemeContext } from '../../context/ThemeContext';
 import SunImg from '../../assets/icons/light.svg';
 import MoonImg from '../../assets/icons/dark.svg';
+import User from '../../assets/icons/user.svg';
+import { auth } from '../../services/firebase/config';
 
 const MainMenu = styled.div`
     background-color: ${({ currentTheme }) => theme[currentTheme].colors.secondary};
@@ -79,7 +81,7 @@ const HamburgerInner = styled.div`
 `
 const ThemeImg = styled.img`
     display: inline-block;
-    margin-left: 5px;
+    margin-left: 10px;
     position: absolute;
     top: 18px;
 `
@@ -95,7 +97,24 @@ const ThemeSwitcher = styled.div`
     cursor: pointer;
     line-height: 60px;
 `
-
+const Separator = styled.div`
+    width: 100%;
+    height: 1px;
+    background: ${({ currentTheme }) => theme[currentTheme].colors.altSyntax};
+    margin: 15px 0px;
+`
+const UserInfo = styled.div`
+    width: 100%;
+    height: 50px;
+    display: flex;
+`
+const UserImg = styled.img`
+    margin: 0px 20px;
+`
+const Name = styled.p`
+    color: ${({ currentTheme }) => theme[currentTheme].colors.syntax};
+    font-size: ${theme.fonts.s};
+`
 
 const ToggleTheme = (currentTheme, setCurrentTheme) => {
     const newTheme = currentTheme === "light" ? "dark" : "light";
@@ -106,6 +125,29 @@ const ToggleTheme = (currentTheme, setCurrentTheme) => {
 const Menu = ({ current }) => {
     const {currentTheme, setCurrentTheme} = useContext(ThemeContext);
     const [isOpen, setIsOpen] = useState(false);
+    const [isSignedIn, setIsSignedIn] = useState(false);
+    const [username, setUsername] = useState('');
+
+    React.useEffect(() => {
+        const checkAuth = () => {
+           auth().onAuthStateChanged((user) => {
+                if(user) {
+                    setUsername(user.email);
+                    localStorage.setItem("uid", user.uid);
+                    if(user.uid) {
+                        setIsSignedIn(true);
+                    }
+                }
+                else {
+                    localStorage.setItem("uid", null);
+                }
+            });
+        } 
+    
+        return () => {
+            checkAuth();
+        }
+    });
 
     return ( 
             <TopBar currentTheme={currentTheme}>
@@ -122,12 +164,47 @@ const Menu = ({ current }) => {
                         path={`${basename}/`}
                         current={current}
                     />
-                    <MenuItem 
+                    {isSignedIn && <MenuItem 
                         name="Watch list"
                         img="watch.svg"
                         path={`${basename}/#/watchlist/`}
                         current={current}
-                    />
+                        />
+                    }
+                    
+                    <Separator currentTheme={currentTheme} />
+                        {isSignedIn ?
+                            <>
+                                <UserInfo>
+                                    <UserImg src={User}/>
+                                    <Name currentTheme={currentTheme}>{username}</Name>
+                                </UserInfo>
+                                <MenuItem
+                                    name="Sign out"
+                                    img="signout.svg"
+                                    path="#"
+                                    current={current}
+                                    signOut
+                                />
+                            </>
+                            :
+                            <>
+                                <MenuItem
+                                    name="Sign in"
+                                    img="signin.svg"
+                                    path={`${basename}/#/signin/`}
+                                    current={current}
+                                />
+                                <MenuItem
+                                    name="Sign up"
+                                    img="signup.svg"
+                                    path={`${basename}/#/signup/`}
+                                    current={current}
+                                />
+                            </>
+
+                        }        
+                         
                     <ThemeSwitcher onClick={() => ToggleTheme(currentTheme, setCurrentTheme)} currentTheme={currentTheme}>
                         Toggle theme
                         {currentTheme === "light" ? 

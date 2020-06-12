@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import styled from 'styled-components';
 import SearchIcon from '../../assets/icons/search.svg';
 import ResultsItem from './ResultsItem';
@@ -6,6 +6,7 @@ import { theme } from '../../themes/GlobalTheme';
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import Loader from 'react-loader-spinner';
 import { ThemeContext } from '../../context/ThemeContext';
+import { auth } from '../../services/firebase/config';
 
 const SearchBlock = styled.div`
     width: 80%;
@@ -104,6 +105,26 @@ const handleChange = (e, setTitle) => {
 }
 
 const SearchBar = (props) => {
+    const [isSignedIn, setIsSignedIn] = useState(false);
+    const [uid, setUid] = useState('');
+
+    useEffect(() => {
+        const checkAuth = () => {
+            auth().onAuthStateChanged((user) => {
+                if(user) {
+                    if(user.uid) {
+                        setUid(user.uid);
+                        setIsSignedIn(true);
+                    }
+                }
+            });
+        } 
+    
+        return () => {
+            checkAuth();
+        }
+    });
+
     const {currentTheme} = useContext(ThemeContext);
 
     const [title, setTitle] = useState('');
@@ -126,7 +147,7 @@ const SearchBar = (props) => {
     } else if(resStatus === "loading") {   
         resultItem = <Loader type="TailSpin" color="#00BFFF" height={200} width={100} timeout={3000} />;
     } else {
-        resultItem =  <ResultsItem movie={movie} />;
+        resultItem =  <ResultsItem uid={uid} isSignedIn={isSignedIn} movie={movie} />;
     }
 
     return ( 

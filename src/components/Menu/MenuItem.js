@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import styled from 'styled-components';
 import { theme } from '../../themes/GlobalTheme';
 import { ThemeContext } from '../../context/ThemeContext';
+import { auth } from '../../services/firebase/config';
 
 const Item = styled.a`
     text-decoration: none;
@@ -33,11 +34,11 @@ const Name = styled.p`
     margin: 0;
 `
 
-const MenuItem = ({ img, name, current, path }) => {
+const MenuItem = ({ img, name, current, path, signOut }) => {
     const {currentTheme} = useContext(ThemeContext);
 
     return ( 
-        <Item currentTheme={currentTheme} href={path} current={current} name={name}>
+        <Item onClick={signOut ? () => auth().signOut().then(() => window.location.href = '/') : null} currentTheme={currentTheme} href={path} current={current} name={name} >
                 <Icon
                     src={require(`../../assets/icons/${img}`)}
                 />    

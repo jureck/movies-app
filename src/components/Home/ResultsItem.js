@@ -102,30 +102,38 @@ const Genres = styled.p`
     color: ${({ currentTheme }) => theme[currentTheme].colors.altSyntax};
     margin: 0px 0px;
 `
+const ErrorMessage = styled.p`
+    color: red;
+    text-align: center;
+`
 
-const addToList = (movie, uid) => {
-    const newItem = {
-        [uid]: {
-                title: movie.title,
-                year: movie.year,
-                duration: movie.duration,
-                rate: movie.rate,
-                genres: movie.genres,
-                description: movie.description
-        }
-    };
-
-    db.collection('movies').add(newItem);
+const addToList = (movie, uid, isSignedIn, setErrorMessage) => {
+    if(isSignedIn) {
+        const newItem = {
+            [uid]: {
+                    title: movie.title,
+                    year: movie.year,
+                    duration: movie.duration,
+                    rate: movie.rate,
+                    genres: movie.genres,
+                    description: movie.description
+            }
+        };
+    
+        db.collection('movies').add(newItem);
+    } else {
+        setErrorMessage("You must be logged in to do that");
+    }
+    
 }
 
-const ResultsItem = ({ movie }) => {
+const ResultsItem = ({ movie, isSignedIn, uid }) => {
     const {currentTheme} = useContext(ThemeContext);
     const [isEmpty, setIsEmpty] = useState(false);
     const [isOnList, setIsOnList] = useState(false); 
-
+    const [errorMessage, setErrorMessage] = useState('');
     const {title, year, description, duration, genres, rate} = movie;
-    const uid = localStorage.getItem("uid");
-
+    
     useEffect(() => {
         if(!title) {
             setIsEmpty(true);
@@ -154,6 +162,9 @@ const ResultsItem = ({ movie }) => {
     }, [title, uid]);
 
     return ( 
+        <>
+
+        <ErrorMessage>{errorMessage}</ErrorMessage>
         <Item isEmpty={isEmpty} currentTheme={currentTheme} >
             <Poster src={movie.img}/>
             <TextWrapper>
@@ -161,7 +172,11 @@ const ResultsItem = ({ movie }) => {
                     <Title>
                         {title}
                     </Title>
-                    <Add currentTheme={currentTheme} isOnList={isOnList} onClick={() => addToList(movie, uid)}>
+                    <Add 
+                        currentTheme={currentTheme} 
+                        isOnList={isOnList} 
+                        onClick={() => addToList(movie, uid, isSignedIn, setErrorMessage)}
+                    >
                         ADD TO LIST
                     </Add>
                     <Added isOnList={isOnList}>
@@ -191,6 +206,8 @@ const ResultsItem = ({ movie }) => {
                 </Description>
             </TextWrapper>
         </Item>
+
+        </>
     );
 }
  
