@@ -1,27 +1,27 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "07bc2d8152a3926c790efeb73d142f7d",
+    "revision": "d3307ac4ee19a10de9c8ce34a691c80d",
     "url": "/movies-app/index.html"
   },
   {
-    "revision": "96fc566c3a4e91b4a65a",
+    "revision": "4ea64818dea3072088c5",
     "url": "/movies-app/static/css/2.f87e9f44.chunk.css"
   },
   {
-    "revision": "350080572248f12735d3",
+    "revision": "494b22a8eb8fff426ca2",
     "url": "/movies-app/static/css/main.1f1b4a52.chunk.css"
   },
   {
-    "revision": "96fc566c3a4e91b4a65a",
-    "url": "/movies-app/static/js/2.8106cec9.chunk.js"
+    "revision": "4ea64818dea3072088c5",
+    "url": "/movies-app/static/js/2.c88d8493.chunk.js"
   },
   {
     "revision": "6331f70a3ea8aafd2e3fca1343e5ed47",
-    "url": "/movies-app/static/js/2.8106cec9.chunk.js.LICENSE.txt"
+    "url": "/movies-app/static/js/2.c88d8493.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "350080572248f12735d3",
-    "url": "/movies-app/static/js/main.99bd82ac.chunk.js"
+    "revision": "494b22a8eb8fff426ca2",
+    "url": "/movies-app/static/js/main.31c05b89.chunk.js"
   },
   {
     "revision": "2b76498351ee2df7cef7",
@@ -36,6 +36,10 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/movies-app/static/media/dark.023a0a49.svg"
   },
   {
+    "revision": "62517b9ba0aa6eb7d9a48cd982b9fa77",
+    "url": "/movies-app/static/media/eye.62517b9b.svg"
+  },
+  {
     "revision": "7012414554657947feeccd70d2f594e9",
     "url": "/movies-app/static/media/home.70124145.svg"
   },
@@ -46,6 +50,22 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
     "revision": "5437e5214c32dc0a8b1e3e3749edd831",
     "url": "/movies-app/static/media/search.5437e521.svg"
+  },
+  {
+    "revision": "440a3bfa190afd4ee2bbd7da793daec1",
+    "url": "/movies-app/static/media/signin.440a3bfa.svg"
+  },
+  {
+    "revision": "7001235176e11ebe518a1a927a500cad",
+    "url": "/movies-app/static/media/signout.70012351.svg"
+  },
+  {
+    "revision": "fbeb90efafa5270fe84446098ef45746",
+    "url": "/movies-app/static/media/signup.fbeb90ef.svg"
+  },
+  {
+    "revision": "b49ba77fda98f7ccdadeb55abca149db",
+    "url": "/movies-app/static/media/user.b49ba77f.svg"
   },
   {
     "revision": "4540d5f020eb959a1d074a947f44786f",
