@@ -19,7 +19,8 @@ const Form = styled.form`
 `
 const Label = styled.label`
     color: ${({ currentTheme }) => theme[currentTheme].colors.syntax};
-    margin-top: 30px;
+    margin-top: 15px;
+    margin-bottom: 3px;
     font-size: ${theme.fonts.xs};
 `
 const Input = styled.input`

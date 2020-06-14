@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { theme } from '../../themes/GlobalTheme';
 import Menu from '../Menu';
@@ -19,7 +19,8 @@ const Form = styled.form`
 `
 const Label = styled.label`
     color: ${({ currentTheme }) => theme[currentTheme].colors.syntax};
-    margin-top: 30px;
+    margin-top: 15px;
+    margin-bottom: 3px;
     font-size: ${theme.fonts.xs};
 `
 const Input = styled.input`
@@ -91,7 +92,7 @@ const Redirector = styled.a`
     color: ${({ currentTheme }) => theme[currentTheme].colors.syntax};
 `
 
-const handleSubmit = async (e, email, password, setPasswordError, setEmailError) => {
+const handleSubmit = async (e, username, email, password, setPasswordError, setEmailError) => {
     e.preventDefault();
     if(password.length < 6) {
         setPasswordError('TOO_SHORT');
@@ -108,15 +109,23 @@ const handleSubmit = async (e, email, password, setPasswordError, setEmailError)
             window.location.href = `${basename}/`;
         }
     }
-    
-
 }
 
 const SignUp = () => {
+
+    useEffect(() => {
+        auth().onAuthStateChanged((user) => {
+            if(user) {
+                user.updateProfile({displayName: username});
+            }
+        });
+    });
+    
     const {currentTheme} = useContext(ThemeContext);
     const [isPasswordHidden, setIsPasswordHidden] = useState(true);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [username, setUsername] = useState('');
     const [emailError, setEmailError] = useState('');
     const [passwordError, setPasswordError] = useState('');
 
@@ -129,7 +138,20 @@ const SignUp = () => {
         <HeroText currentTheme={currentTheme} >
             Create free acount here
         </HeroText>
-        <Form onSubmit={(e) => handleSubmit(e, email, password, setPasswordError, setEmailError)}>
+        <Form onSubmit={(e) => handleSubmit(e, username, email, password, setPasswordError, setEmailError)}>
+            <Label 
+                htmlFor="username" 
+                currentTheme={currentTheme}
+            >
+                Username
+            </Label>
+            <Input 
+                onChange={(e) => setUsername(e.target.value)} 
+                value={username} 
+                type="text" 
+                name="username"  
+                currentTheme={currentTheme} 
+            />
             <Label 
                 htmlFor="email" 
                 currentTheme={currentTheme}>Email

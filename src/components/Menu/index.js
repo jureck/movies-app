@@ -113,10 +113,9 @@ const UserImg = styled.img`
 `
 const Name = styled.p`
     color: ${({ currentTheme }) => theme[currentTheme].colors.syntax};
-    font-size: ${theme.fonts.xs};
+    font-size: ${theme.fonts.s};
     font-weight: 500;
     width: 60%;
-    line-height: 25px;
 `
 
 const ToggleTheme = (currentTheme, setCurrentTheme) => {
@@ -136,10 +135,7 @@ const Menu = ({ current }) => {
         const checkAuth = () => {
            auth().onAuthStateChanged((user) => {
                 if(user) {
-                    const userEmail = user.email;
-                    const indexOfAt = userEmail.indexOf("@");
-                    setUsername(userEmail.slice(0, indexOfAt));
-            
+                    setUsername(user.displayName);
                     localStorage.setItem("uid", user.uid);
                     if(user.uid) {
                         setIsSignedIn(true);
