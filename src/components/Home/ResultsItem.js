@@ -53,7 +53,7 @@ const Rate = styled.p`
 `
 
 const Description = styled.p`
-     color: ${theme.colors.syntax};
+     color: ${({ currentTheme }) => theme[currentTheme].colors.syntax};
 `
 const Add = styled.button`
     font-weight: 700;
@@ -201,7 +201,7 @@ const ResultsItem = ({ movie, isSignedIn, uid }) => {
                         {genres}
                     </Genres>
                 </DetailsWrapper>
-                <Description>
+                <Description currentTheme={currentTheme}>
                     {description}
                 </Description>
             </TextWrapper>

@@ -13,8 +13,8 @@ const SearchBlock = styled.div`
     height: 45px;
     position: relative;
 
-    @media (min-width: 700px) {
-        width: 60%;
+    @media (min-width: 1000px) {
+        width: 40%;
     }
 `
 const SearchInput = styled.input`

@@ -113,7 +113,10 @@ const UserImg = styled.img`
 `
 const Name = styled.p`
     color: ${({ currentTheme }) => theme[currentTheme].colors.syntax};
-    font-size: ${theme.fonts.s};
+    font-size: ${theme.fonts.xs};
+    font-weight: 500;
+    width: 60%;
+    line-height: 25px;
 `
 
 const ToggleTheme = (currentTheme, setCurrentTheme) => {
