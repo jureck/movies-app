@@ -125,6 +125,7 @@ const ToggleTheme = (currentTheme, setCurrentTheme) => {
     localStorage.setItem('theme', newTheme);
 }
 
+
 const Menu = ({ current }) => {
     const {currentTheme, setCurrentTheme} = useContext(ThemeContext);
     const [isOpen, setIsOpen] = useState(false);
@@ -135,7 +136,10 @@ const Menu = ({ current }) => {
         const checkAuth = () => {
            auth().onAuthStateChanged((user) => {
                 if(user) {
-                    setUsername(user.email);
+                    const userEmail = user.email;
+                    const indexOfAt = userEmail.indexOf("@");
+                    setUsername(userEmail.slice(0, indexOfAt));
+            
                     localStorage.setItem("uid", user.uid);
                     if(user.uid) {
                         setIsSignedIn(true);
