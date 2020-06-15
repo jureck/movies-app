@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import styled from 'styled-components';
 import SearchIcon from '../../assets/icons/search.svg';
 import ResultsItem from './ResultsItem';
@@ -104,27 +104,21 @@ const handleChange = (e, setTitle) => {
     setTitle(value);
 }
 
-const SearchBar = (props) => {
-    const [isSignedIn, setIsSignedIn] = useState(false);
-    const [uid, setUid] = useState('');
 
-    useEffect(() => {
-        const checkAuth = () => {
-            auth().onAuthStateChanged((user) => {
-                if(user) {
-                    if(user.uid) {
-                        setUid(user.uid);
-                        setIsSignedIn(true);
-                    }
-                }
-            });
-        } 
-    
-        return () => {
-            checkAuth();
+
+const SearchBar = (props) => {
+
+    auth().onAuthStateChanged((user) => {
+        if(user) {
+            if(user.uid) {
+                setUid(user.uid);
+                setIsSignedIn(true);
+            }
         }
     });
 
+    const [isSignedIn, setIsSignedIn] = useState(false);
+    const [uid, setUid] = useState('');
     const {currentTheme} = useContext(ThemeContext);
 
     const [title, setTitle] = useState('');

@@ -130,25 +130,17 @@ const Menu = ({ current }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [isSignedIn, setIsSignedIn] = useState(false);
     const [username, setUsername] = useState('');
-
-    React.useEffect(() => {
-        const checkAuth = () => {
-           auth().onAuthStateChanged((user) => {
-                if(user) {
-                    setUsername(user.displayName);
-                    localStorage.setItem("uid", user.uid);
-                    if(user.uid) {
-                        setIsSignedIn(true);
-                    }
-                }
-                else {
-                    localStorage.setItem("uid", null);
-                }
-            });
-        } 
     
-        return () => {
-            checkAuth();
+    auth().onAuthStateChanged((user) => {
+        if(user) {
+            setUsername(user.displayName);
+            localStorage.setItem("uid", user.uid);
+            if(user.uid) {
+                setIsSignedIn(true);
+            }
+        }
+        else {
+            localStorage.setItem("uid", null);
         }
     });
 

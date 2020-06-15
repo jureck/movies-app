@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
 import { theme } from '../../themes/GlobalTheme';
 import Menu from '../Menu';
@@ -100,26 +100,22 @@ const handleSubmit = async (e, username, email, password, setPasswordError, setE
     } else {
         setPasswordError('');
         setEmailError('');
-        const result = await auth().createUserWithEmailAndPassword(email, password).catch(err => {
+        await auth().createUserWithEmailAndPassword(email, password)
+        .then((cred) => {
+            if(cred.user) {
+                cred.user.updateProfile({displayName: username});
+            }
+        })
+        .then(() => window.location.href = `${basename}/`)
+        .catch(err => {
             if(err.code === "auth/email-already-in-use") {
                 setEmailError('EMAIL_IN_USE');
             }
         });
-        if(result) {
-            window.location.href = `${basename}/`;
-        }
     }
 }
 
 const SignUp = () => {
-
-    useEffect(() => {
-        auth().onAuthStateChanged((user) => {
-            if(user) {
-                user.updateProfile({displayName: username});
-            }
-        });
-    });
     
     const {currentTheme} = useContext(ThemeContext);
     const [isPasswordHidden, setIsPasswordHidden] = useState(true);
