@@ -97,7 +97,7 @@ const handleSubmit = async (e, email, password, setEmailError, setPasswordError)
     e.preventDefault();
     setEmailError('');
     setPasswordError('');
-    auth().signInWithEmailAndPassword(email, password)
+    await auth().signInWithEmailAndPassword(email, password)
     .then((cred) => {
         localStorage.setItem("uid", cred.user.uid);
         window.location.href = `${basename}/`;

@@ -118,6 +118,7 @@ const Name = styled.p`
     width: 60%;
 `
 
+
 const ToggleTheme = (currentTheme, setCurrentTheme) => {
     const newTheme = currentTheme === "light" ? "dark" : "light";
     setCurrentTheme(newTheme);
@@ -145,76 +146,77 @@ const Menu = ({ current }) => {
     });
 
     return ( 
-            <TopBar currentTheme={currentTheme}>
-                <Hamburger onClick={() => setIsOpen(!isOpen)}>
-                    <HamburgerInner currentTheme={currentTheme}/>
-                </Hamburger>
-                <CurrentPage currentTheme={currentTheme} >
-                    {current}
-                </CurrentPage>
-                <MainMenu currentTheme={currentTheme} isOpen={isOpen}>
-                    <MenuItem 
-                        name="Home"
-                        img="home.svg"
-                        path={`${basename}/`}
-                        current={current}
+      
+        <TopBar currentTheme={currentTheme}>
+            <Hamburger onClick={() => setIsOpen(!isOpen)}>
+                <HamburgerInner currentTheme={currentTheme}/>
+            </Hamburger>
+            <CurrentPage currentTheme={currentTheme} >
+                {current}
+            </CurrentPage>
+            <MainMenu currentTheme={currentTheme} isOpen={isOpen}>
+                <MenuItem 
+                    name="Home"
+                    img="home.svg"
+                    path={`${basename}/`}
+                    current={current}
+                />
+                {isSignedIn && <MenuItem 
+                    name="Watch list"
+                    img="watch.svg"
+                    path={`${basename}/#/watchlist/`}
+                    current={current}
                     />
-                    {isSignedIn && <MenuItem 
-                        name="Watch list"
-                        img="watch.svg"
-                        path={`${basename}/#/watchlist/`}
-                        current={current}
-                        />
+                }
+                
+                <Separator currentTheme={currentTheme} />
+                    {isSignedIn ?
+                        <>
+                            <UserInfo>
+                                <UserImg src={User}/>
+                                <Name currentTheme={currentTheme}>{username}</Name>
+                            </UserInfo>
+                            <MenuItem
+                                name="Sign out"
+                                img="signout.svg"
+                                path={`${basename}/`}
+                                current={current}
+                                signOut
+                            />
+                        </>
+                        :
+                        <>
+                            <MenuItem
+                                name="Sign in"
+                                img="signin.svg"
+                                path={`${basename}/#/signin/`}
+                                current={current}
+                            />
+                            <MenuItem
+                                name="Sign up"
+                                img="signup.svg"
+                                path={`${basename}/#/signup/`}
+                                current={current}
+                            />
+                        </>
+
+                    }        
+                        
+                <ThemeSwitcher onClick={() => ToggleTheme(currentTheme, setCurrentTheme)} currentTheme={currentTheme}>
+                    Toggle theme
+                    {currentTheme === "light" ? 
+                        <ThemeImg src={MoonImg}/> 
+                            :
+                        <ThemeImg src={SunImg}/> 
                     }
                     
-                    <Separator currentTheme={currentTheme} />
-                        {isSignedIn ?
-                            <>
-                                <UserInfo>
-                                    <UserImg src={User}/>
-                                    <Name currentTheme={currentTheme}>{username}</Name>
-                                </UserInfo>
-                                <MenuItem
-                                    name="Sign out"
-                                    img="signout.svg"
-                                    path={`${basename}/`}
-                                    current={current}
-                                    signOut
-                                />
-                            </>
-                            :
-                            <>
-                                <MenuItem
-                                    name="Sign in"
-                                    img="signin.svg"
-                                    path={`${basename}/#/signin/`}
-                                    current={current}
-                                />
-                                <MenuItem
-                                    name="Sign up"
-                                    img="signup.svg"
-                                    path={`${basename}/#/signup/`}
-                                    current={current}
-                                />
-                            </>
-
-                        }        
-                         
-                    <ThemeSwitcher onClick={() => ToggleTheme(currentTheme, setCurrentTheme)} currentTheme={currentTheme}>
-                        Toggle theme
-                        {currentTheme === "light" ? 
-                            <ThemeImg src={MoonImg}/> 
-                                :
-                            <ThemeImg src={SunImg}/> 
-                        }
-                        
-                    </ThemeSwitcher>       
-                </MainMenu>
-                <MenuCloser 
-                    onClick={() => setIsOpen(!isOpen)}
-                    isOpen={isOpen}
-                />
-            </TopBar>  
+                </ThemeSwitcher>       
+            </MainMenu>
+            <MenuCloser 
+                onClick={() => setIsOpen(!isOpen)}
+                isOpen={isOpen}
+            />
+        </TopBar>
     );
 }
  

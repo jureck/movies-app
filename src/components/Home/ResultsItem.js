@@ -20,13 +20,14 @@ const Item = styled.div`
 `
 const TextWrapper = styled.div`
     height: 100%;
+    width: 100%;
 `
 const TitleWrapper = styled.div`
     display: flex;
 `
 const Title = styled.p`
     color: ${theme.colors.accent};
-    flex: 2;
+    flex: 3;
     margin: 0;
     font-weight: 700;
     font-size: ${theme.fonts.m};
@@ -116,7 +117,8 @@ const addToList = (movie, uid, isSignedIn, setErrorMessage) => {
                     duration: movie.duration,
                     rate: movie.rate,
                     genres: movie.genres,
-                    description: movie.description
+                    description: movie.description,
+                    addedAt: Date.now()
             }
         };
     

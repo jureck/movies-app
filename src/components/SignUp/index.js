@@ -101,9 +101,9 @@ const handleSubmit = async (e, username, email, password, setPasswordError, setE
         setPasswordError('');
         setEmailError('');
         await auth().createUserWithEmailAndPassword(email, password)
-        .then((cred) => {
+        .then( async (cred) => {
             if(cred.user) {
-                cred.user.updateProfile({displayName: username});
+                await cred.user.updateProfile({displayName: username});
             }
         })
         .then(() => window.location.href = `${basename}/`)
