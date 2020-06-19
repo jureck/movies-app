@@ -103,7 +103,7 @@ const WatchList = () => {
     const [docs, setDocs] = useState([]);
     const [status, setStatus] = useState('ready');
     const uid = localStorage.getItem("uid");
-    let i = 0;
+
     useEffect(() => { 
         const res = db.collection('movies').onSnapshot(snapshot => {
             if(snapshot.size) {
@@ -164,12 +164,12 @@ const WatchList = () => {
             <Menu
                 current="Watch list"
             />
-            {movies.length && 
+            {movies.length ? 
             <>
                 <Sort>
                     <SortIcon onClick={() => setIsSortOpen(!isSortOpen)} src={currentTheme === "light" ? SortBlack : SortWhite } />
                 </Sort>
-                <SortOptions currentTheme={currentTheme} isSortOpen={isSortOpen}>
+                <SortOptions onClick={() => setIsSortOpen(!isSortOpen)} currentTheme={currentTheme} isSortOpen={isSortOpen}>
                     <SortOption 
                         currentTheme={currentTheme} 
                         onClick={() => sortMovies(movies, setMovies, 'a-z', setSortType)}
@@ -191,6 +191,8 @@ const WatchList = () => {
                 </SortOptions>
                 <CloseBox onClick={() => setIsSortOpen(!isSortOpen)} isSortOpen={isSortOpen} />
             </>
+            :
+            <Loader type="TailSpin" color="#00BFFF" height={400} width={100} timeout={10000} />
             }
             {listItem}
         </Main>
