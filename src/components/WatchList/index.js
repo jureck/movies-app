@@ -135,6 +135,8 @@ const WatchList = () => {
                     setStatus('empty');
                 }
                 setDocs(docsId);
+            } else {
+                setStatus('empty');
             }
         });   
         
@@ -144,7 +146,7 @@ const WatchList = () => {
 
     }, [uid]);
 
-    let listItem = <Loader type="TailSpin" color="#00BFFF" height={400} width={100} timeout={5000} />;
+    let listItem = <Loader type="TailSpin" color={theme.colors.accent} height={400} width={100} timeout={5000} />;
 
     if(status === "empty") {
         listItem = <Error currentTheme={currentTheme} > Your list is empty :( </Error>
@@ -164,7 +166,7 @@ const WatchList = () => {
             <Menu
                 current="Watch list"
             />
-            {movies.length ? 
+            {movies.length ?
             <>
                 <Sort>
                     <SortIcon onClick={() => setIsSortOpen(!isSortOpen)} src={currentTheme === "light" ? SortBlack : SortWhite } />
@@ -192,8 +194,12 @@ const WatchList = () => {
                 <CloseBox onClick={() => setIsSortOpen(!isSortOpen)} isSortOpen={isSortOpen} />
             </>
             :
-            <Loader type="TailSpin" color="#00BFFF" height={400} width={100} timeout={10000} />
+            null
             }
+            {status === 'ready' ?
+            <Loader type="TailSpin" color={theme.colors.accent} height={400} width={100} timeout={10000} />
+            : null
+            }   
             {listItem}
         </Main>
         

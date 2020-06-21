@@ -139,7 +139,7 @@ const SearchBar = (props) => {
         resultItem = <Error currentTheme={currentTheme}> Nothing found :( </Error>
 
     } else if(resStatus === "loading") {   
-        resultItem = <Loader type="TailSpin" color="#00BFFF" height={200} width={100} timeout={3000} />;
+        resultItem = <Loader type="TailSpin" color={theme.colors.accent} height={200} width={100} timeout={3000} />;
     } else {
         resultItem =  <ResultsItem uid={uid} isSignedIn={isSignedIn} movie={movie} />;
     }
