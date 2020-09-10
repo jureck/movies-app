@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "0d88d4a7f9b302ea2bd41fccea61d1db",
+    "revision": "b55581a1745999c6d6e3ad53bad16d2b",
     "url": "/movies-app/index.html"
   },
   {
@@ -8,7 +8,7 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/movies-app/static/css/2.f87e9f44.chunk.css"
   },
   {
-    "revision": "c4749f9e417a13e496c8",
+    "revision": "b5ee10e96f490d591471",
     "url": "/movies-app/static/css/main.1f1b4a52.chunk.css"
   },
   {
@@ -20,16 +20,16 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/movies-app/static/js/2.2c45d9fc.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "c4749f9e417a13e496c8",
-    "url": "/movies-app/static/js/main.7d2bdf2d.chunk.js"
+    "revision": "b5ee10e96f490d591471",
+    "url": "/movies-app/static/js/main.bcba2dd0.chunk.js"
   },
   {
     "revision": "2b76498351ee2df7cef7",
     "url": "/movies-app/static/js/runtime-main.48b6978c.js"
   },
   {
-    "revision": "e9716c464ae970e648f416c3548566a6",
-    "url": "/movies-app/static/media/check.e9716c46.svg"
+    "revision": "3641699973e543e103fd91c02e2734bf",
+    "url": "/movies-app/static/media/check.36416999.svg"
   },
   {
     "revision": "023a0a49da47e32b524905e56429a9e5",
