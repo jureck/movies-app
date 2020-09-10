@@ -15,7 +15,7 @@ const Item = styled.div`
     border-radius: ${theme.properties.radiusSmall};
 
     @media (min-width: 700px) {
-        width: 70%;
+        width: 50%;
     }
 `
 const TextWrapper = styled.div`
@@ -30,7 +30,7 @@ const Title = styled.p`
     flex: 3;
     margin: 0;
     font-weight: 700;
-    font-size: ${theme.fonts.m};
+    font-size: ${theme.fonts.xl};
 `
 const Poster = styled.img`
     display: block;
@@ -45,29 +45,39 @@ const Rate = styled.p`
     color: ${theme.colors.accent};
     margin: 15px 0px;
     font-size: ${theme.fonts.s};
-    border: 1px solid ${theme.colors.accent};
+    border: 3px solid ${theme.colors.accent};
     width: 70px;
     text-align: center;
     padding: 5px;
     font-weight: 700;
     border-radius: ${theme.properties.radiusSmall};
+    background-color: ${({ currentTheme }) => theme[currentTheme].colors.primary};
 `
 
 const Description = styled.p`
-     color: ${({ currentTheme }) => theme[currentTheme].colors.syntax};
+    color: ${({ currentTheme }) => theme[currentTheme].colors.syntax};
+    padding: 20px 10px;
+    border-radius: ${theme.properties.radiusSmall};
+    background-color: ${({ currentTheme }) => theme[currentTheme].colors.primary};
+    font-weight: 700;
+    font-size: ${theme.fonts.s};
 `
 const Add = styled.button`
     font-weight: 700;
     display: ${({ isOnList }) => isOnList ? "none" : "block"};
     height: 30px;
     border: 0;
-    background-color: ${({ currentTheme }) => theme[currentTheme].colors.secondary};
+    background-color: ${({ currentTheme }) => theme[currentTheme].colors.primary};
     color:  ${theme.colors.add};
     transition: all .3s ease-in-out;
     outline: none;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: ${theme.fonts.xs};
+    border-radius: ${theme.properties.radiusSmall};
 
     &:hover {
-        background-color: ${({ currentTheme }) => theme[currentTheme].colors.primary};
+        background-color: ${({ currentTheme }) => theme[currentTheme].colors.secondary};
     }
 `
 const Added = styled.p`
@@ -77,13 +87,13 @@ const Added = styled.p`
     color:  ${theme.colors.add};
     margin: 0;
     margin-top: 5px;
-    font-size: ${theme.fonts.xs};
+    font-size: ${theme.fonts.s};
 `
 const Check = styled.img`
     display: ${({ isOnList }) => isOnList ? "block" : "none"};
     padding-left: 2px;
     padding-top: 2px;
-    height: 23px;
+    height: 25px;
 `
 const Year = styled.p`
     color: ${({ currentTheme }) => theme[currentTheme].colors.altSyntax};
@@ -98,10 +108,18 @@ const Duration = styled.p`
     color: ${({ currentTheme }) => theme[currentTheme].colors.altSyntax};
     margin: 0px;
     margin-right: 30px;
+    padding: 10px;
+    border-radius: ${theme.properties.radiusSmall};
+    background-color: ${({ currentTheme }) => theme[currentTheme].colors.primary};
+    font-weight: 700;
 `
 const Genres = styled.p`
     color: ${({ currentTheme }) => theme[currentTheme].colors.altSyntax};
     margin: 0px 0px;
+    padding: 10px;
+    border-radius: ${theme.properties.radiusSmall};
+    background-color: ${({ currentTheme }) => theme[currentTheme].colors.primary};
+    font-weight: 700;
 `
 const ErrorMessage = styled.p`
     color: red;
@@ -192,7 +210,7 @@ const ResultsItem = ({ movie, isSignedIn, uid }) => {
                 <Year currentTheme={currentTheme}>
                     {year}
                 </Year>
-                <Rate>
+                <Rate currentTheme={currentTheme}>
                     {rate}
                 </Rate>
                 <DetailsWrapper>

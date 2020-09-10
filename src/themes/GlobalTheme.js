@@ -9,8 +9,8 @@ export const theme = {
     },
     dark: {
         colors: {
-            primary: '#202627',
-            secondary: '#2C3335',
+            primary: '#1a1e1f',
+            secondary: '#202526',
             syntax: '#FFFFFF',
             altSyntax: '#858585',
         }
@@ -19,7 +19,7 @@ export const theme = {
         accent: '#FFCF72',
         accentAlt: '#C29A4C',
         delete: '#D71D1D',
-        add: '#33F86A'
+        add: '#19a849'
     },
     fonts: {
         xs: '14px',

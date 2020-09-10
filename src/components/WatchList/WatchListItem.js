@@ -23,17 +23,20 @@ const Title = styled.p`
     color: ${theme.colors.accent};
     flex: 2;
     margin: 0;
-    font-size: ${theme.fonts.m};
+    font-size: ${theme.fonts.l};
     font-weight: 700;
 `
 const Delete = styled.button`
     border: 0;
-    background-color: ${({ currentTheme }) => theme[currentTheme].colors.secondary};
+    background-color: ${({ currentTheme }) => theme[currentTheme].colors.primary};
     color:  ${theme.colors.delete};
     transition: all .3s ease-in-out;
+    font-weight: 900;
+    border-radius: ${theme.properties.radiusSmall};
+    cursor: pointer;
 
     &:hover {
-        background-color: ${({ currentTheme }) => theme[currentTheme].colors.primary};
+        background-color: ${({ currentTheme }) => theme[currentTheme].colors.secondary};
     }
 `
 const Year = styled.p`
@@ -49,9 +52,17 @@ const DetailsWrapper = styled.div`
 const Duration = styled.p`
     color: ${({ currentTheme }) => theme[currentTheme].colors.syntax};
     margin-right: 30px;
+    padding: 10px;
+    border-radius: ${theme.properties.radiusSmall};
+    background-color: ${({ currentTheme }) => theme[currentTheme].colors.primary};
+    font-weight: 700;
 `
 const Genres = styled.p`
     color: ${({ currentTheme }) => theme[currentTheme].colors.syntax};
+    padding: 10px;
+    border-radius: ${theme.properties.radiusSmall};
+    background-color: ${({ currentTheme }) => theme[currentTheme].colors.primary};
+    font-weight: 700;
 `
 
 
