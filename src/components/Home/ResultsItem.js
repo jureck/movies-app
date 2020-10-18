@@ -12,6 +12,7 @@ const Item = styled.div`
     background-color: ${({ currentTheme }) => theme[currentTheme].colors.secondary};
     padding: 10px;
     margin-top: 20px;
+    margin-bottom: 150px;
     border-radius: ${theme.properties.radiusSmall};
 
     @media (min-width: 700px) {
@@ -112,6 +113,8 @@ const Duration = styled.p`
     border-radius: ${theme.properties.radiusSmall};
     background-color: ${({ currentTheme }) => theme[currentTheme].colors.primary};
     font-weight: 700;
+    min-width: 75px;
+    max-height: 38px;
 `
 const Genres = styled.p`
     color: ${({ currentTheme }) => theme[currentTheme].colors.altSyntax};

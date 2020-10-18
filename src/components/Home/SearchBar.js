@@ -7,6 +7,7 @@ import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import Loader from 'react-loader-spinner';
 import { ThemeContext } from '../../context/ThemeContext';
 import { auth } from '../../services/firebase/config';
+import { db } from '../../services/firebase/config';
 
 const SearchBlock = styled.div`
     width: 80%;
@@ -60,7 +61,81 @@ const Error = styled.div`
     margin-top: 100px;
 `
 
-const onSubmit = async (e, props, title, movie, setMovie, setResStatus) => {
+const RecentlySearched = styled.section`
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    width: 1000px;
+    margin-bottom: 200px;
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+
+    @media (max-width: 1050px) {
+        width: 90%;
+    }
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+`
+
+const RecentlyHeader = styled.header`
+    width: 980px;
+    text-align: left;
+    color: ${({ currentTheme }) => theme[currentTheme].colors.syntax};
+    font-size: ${theme.fonts.xl};
+    font-weight: 700;
+    margin-bottom: 15px;
+
+    @media (max-width: 1050px) {
+        width: calc(90% - 20px);
+    }
+
+    @media (max-width: 600px) {
+        font-size: ${theme.fonts.l};
+    }
+`
+
+const RecentlySearchedItem = styled.article`
+    display: flex;
+    flex-direction: column;
+    margin: 0px 10px;
+    flex: 0 0 auto;
+    width: 230px;
+    @media (max-width: 1050px) {
+        width: calc(50% - 20px);
+    }
+`
+
+const ItemPoster = styled.img`
+    height: auto;
+    width: 100%;
+
+    @media (max-width: 650px) {
+        height: 60vw;
+        width: 100%;
+    }
+`
+
+const ItemTitle = styled.p`
+    color: ${theme.colors.accent};
+    font-size: ${theme.fonts.m};
+    margin: 5px 0px;
+
+    @media (max-width: 650px) {
+        font-size: ${theme.fonts.s};
+    }
+`
+
+const ItemYear = styled.p`
+    color: ${({ currentTheme }) => theme[currentTheme].colors.altSyntax};
+    margin: 0px;
+    font-size: ${theme.fonts.s};
+`
+
+const onSubmit = async (e, props, title, movie, setMovie, setResStatus, uid) => {
     setResStatus('loading');
     e.preventDefault();
     const result = await props.getDataFromApi(title);
@@ -88,6 +163,16 @@ const onSubmit = async (e, props, title, movie, setMovie, setResStatus) => {
                 error: false
             });
         }
+
+        const recentMovie = {
+            [uid]: {
+                title: result.Title,
+                img: result.Poster,
+                year: result.Year,
+            },
+            addedAt: Date.now(),
+        }
+        db.collection('history').add(recentMovie);
     } else {
         setMovie({...movie, error: true});
     }
@@ -107,16 +192,6 @@ const handleChange = (e, setTitle) => {
 
 
 const SearchBar = (props) => {
-
-    auth().onAuthStateChanged((user) => {
-        if(user) {
-            if(user.uid) {
-                setUid(user.uid);
-                setIsSignedIn(true);
-            }
-        }
-    });
-
     const [isSignedIn, setIsSignedIn] = useState(false);
     const [uid, setUid] = useState('');
     const {currentTheme} = useContext(ThemeContext);
@@ -132,7 +207,48 @@ const SearchBar = (props) => {
         error: false
     });
     const [resStatus, setResStatus] = useState('ready');
+    const [searched, setSearched] = useState([]);
 
+    React.useEffect(() => {
+        auth().onAuthStateChanged((user) => {
+            if(user) {
+                if(user.uid) {
+                    setUid(user.uid);
+                    setIsSignedIn(true);
+                }
+            }
+        });
+    });
+
+    React.useEffect(() => { 
+        const res = db.collection('history').onSnapshot(snapshot => {
+            if(snapshot.size) {
+                let results = [];
+                snapshot.forEach(doc => {
+                        if(doc.data()[uid]) {
+                            results.unshift({ 
+                                title: doc.data()[uid].title, 
+                                img: doc.data()[uid].img,
+                                year: doc.data()[uid].year,  
+                                addedAt: doc.data().addedAt,
+                            });
+                        }
+                    }
+                );
+                results = results.sort((a,b) => (a.addedAt < b.addedAt) ? 1 : ((b.addedAt < a.addedAt) ? -1 : 0)).slice(0, 4);
+                if(results.length) {
+                    setSearched(results);
+                }
+            }
+        });   
+        
+        return () => {
+            res();
+        }
+
+    }, [uid]);
+   
+    
     let resultItem = "";
 
     if(resStatus === "empty") {
@@ -147,7 +263,7 @@ const SearchBar = (props) => {
     return ( 
         <>
             <SearchBlock>
-                <Form onSubmit={(e) => onSubmit(e, props, title, movie, setMovie, setResStatus)}>
+                <Form onSubmit={(e) => onSubmit(e, props, title, movie, setMovie, setResStatus, uid)}>
                     <SearchInput currentTheme={currentTheme} value={title} onChange={(e) => handleChange(e, setTitle)}/>
                     <SearchButton>
                         <SearchImg src={SearchIcon} />
@@ -155,6 +271,20 @@ const SearchBar = (props) => {
                 </Form>
             </SearchBlock>
             { resultItem }
+            { searched.length > 0 && <RecentlyHeader  currentTheme={currentTheme}>Recently searched</RecentlyHeader> }
+            <RecentlySearched>
+                {searched.length > 0 && searched.map((movie) => 
+                    <RecentlySearchedItem key={movie.addedAt}>
+                        <ItemPoster src={movie.img} />
+                        <ItemTitle currentTheme={currentTheme}>
+                            {movie.title}
+                        </ItemTitle>
+                        <ItemYear currentTheme={currentTheme}>
+                            {movie.year}
+                        </ItemYear>
+                    </RecentlySearchedItem>
+                )}
+            </RecentlySearched>
         </>
 
     );
