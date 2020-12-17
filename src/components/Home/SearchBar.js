@@ -105,13 +105,15 @@ const RecentlySearchedItem = styled.article`
     flex: 0 0 auto;
     width: 230px;
     @media (max-width: 1050px) {
-        width: calc(50% - 20px);
+        width: 37vw;
     }
 `
 
 const ItemPoster = styled.img`
     height: auto;
     width: 100%;
+    min-height: 345px;
+    max-height: 560px;
 
     @media (max-width: 650px) {
         height: 60vw;
