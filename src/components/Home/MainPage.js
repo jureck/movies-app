@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 import styled from 'styled-components';
 import SearchIcon from '../../assets/icons/search.svg';
+import NoPoster from '../../assets/icons/noPoster.png';
 import ResultsItem from './ResultsItem';
 import { theme } from '../../themes/GlobalTheme';
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
@@ -59,6 +60,7 @@ const Error = styled.div`
     text-align: center;
     font-size: ${theme.fonts.l};
     margin-top: 100px;
+    margin-bottom: 200px;
 `
 
 const RecentlySearched = styled.section`
@@ -88,6 +90,8 @@ const RecentlyHeader = styled.header`
     font-size: ${theme.fonts.xl};
     font-weight: 700;
     margin-bottom: 15px;
+    margin-top: 100px;
+
 
     @media (max-width: 1050px) {
         width: calc(90% - 20px);
@@ -104,7 +108,12 @@ const RecentlySearchedItem = styled.article`
     margin: 0px 10px;
     flex: 0 0 auto;
     width: 230px;
+
     @media (max-width: 1050px) {
+        width: 20%;
+    }
+
+    @media (max-width: 650px) {
         width: 37vw;
     }
 `
@@ -112,13 +121,8 @@ const RecentlySearchedItem = styled.article`
 const ItemPoster = styled.img`
     height: auto;
     width: 100%;
-    min-height: 345px;
     max-height: 560px;
 
-    @media (max-width: 650px) {
-        height: 60vw;
-        width: 100%;
-    }
 `
 
 const ItemTitle = styled.p`
@@ -142,34 +146,21 @@ const onSubmit = async (e, props, title, movie, setMovie, setResStatus, uid) => 
     e.preventDefault();
     const result = await props.getDataFromApi(title);
     if(result.Response === "True") {
-        if(result.Ratings.length > 0) {
-            setMovie({
-                title: result.Title,
-                year: result.Year,
-                rate: result.Ratings[0].Value,
-                duration: result.Runtime,
-                genres: result.Genre,
-                description: result.Plot,
-                error: false,
-                img: result.Poster
-            });
-        } else {
-            setMovie({
-                title: result.Title,
-                year: result.Year,
-                rate: "?",
-                duration: result.Runtime,
-                genres: result.Genre,
-                description: result.Plot,
-                img: result.Poster,
-                error: false
-            });
-        }
+        setMovie({
+            title: result.Title,
+            year: result.Year,
+            rate: result.Ratings.length > 0 ? result.Ratings[0].Value : "N/A",
+            duration: result.Runtime,
+            genres: result.Genre,
+            description: result.Plot,
+            error: false,
+            img: result.Poster === "N/A" ? NoPoster : result.Poster,
+        });
 
         const recentMovie = {
             [uid]: {
                 title: result.Title,
-                img: result.Poster,
+                img: result.Poster === "N/A" ? NoPoster : result.Poster,
                 year: result.Year,
             },
             addedAt: Date.now(),

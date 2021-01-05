@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import styled from 'styled-components';
 import { theme } from '../../themes/GlobalTheme';
-import SearchBar from './SearchBar';
+import MainPage from './MainPage';
 import Menu from '../Menu/index';
 import { apiAddress, apiKey } from '../../services/api/config';
 import { ThemeContext } from '../../context/ThemeContext';
@@ -16,6 +16,7 @@ const HeaderText = styled.p`
    font-size: ${theme.fonts.xl};
    color: ${({ currentTheme }) => theme[currentTheme].colors.syntax};
    text-align: center;
+   margin-top: 100px;
 `
 const getDataFromApi = async (title) => {
     const movieTitle = title;
@@ -35,7 +36,7 @@ const Home = () => {
             <HeaderText currentTheme={currentTheme}>
                 Start searching
             </HeaderText>
-            <SearchBar getDataFromApi={getDataFromApi} />
+            <MainPage getDataFromApi={getDataFromApi} />
         </Main>
     );
 }
