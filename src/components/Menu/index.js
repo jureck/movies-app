@@ -119,11 +119,7 @@ const Name = styled.p`
 `
 
 
-const ToggleTheme = (currentTheme, setCurrentTheme) => {
-    const newTheme = currentTheme === "light" ? "dark" : "light";
-    setCurrentTheme(newTheme);
-    localStorage.setItem('theme', newTheme);
-}
+
 
 
 const Menu = ({ current }) => {
@@ -144,6 +140,12 @@ const Menu = ({ current }) => {
             localStorage.setItem("uid", null);
         }
     });
+
+    const ToggleTheme = (currentTheme, setCurrentTheme) => {
+        const newTheme = currentTheme === "light" ? "dark" : "light";
+        setCurrentTheme(newTheme);
+        localStorage.setItem('theme', newTheme);
+    }
 
     return ( 
       

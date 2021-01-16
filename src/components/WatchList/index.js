@@ -71,43 +71,22 @@ const CloseBox = styled.div`
     z-index: 50;
 `
 
-const sortMovies = (movies, setMovies, type, setSortType) => {
-    if(type === 'a-z') {
-        setMovies(movies.sort((a, b) => {
-            if(a.title < b.title) return -1; 
-            if(a.title > b.title) return 1; 
-            return 0;
-        }));
-        setSortType('a-z');
-    }
-    if(type === 'earliest') {
-        setMovies(movies.sort((a, b) => {
-            return a.addedAt - b.addedAt;
-        }));
-        setSortType('earliest');
-    }
-    if(type === 'latest') {
-        setMovies(movies.sort((a, b) => {
-            return b.addedAt - a.addedAt;
-        }));
-        setSortType('latest');
-    }
-    
-}
+
 
 const WatchList = () => {
+    const loader = <Loader type="TailSpin" color={theme.colors.accent} height={400} width={100} timeout={5000} />;
     const {currentTheme} = useContext(ThemeContext);
     const [movies, setMovies] = useState([]);
-    const [sortType, setSortType] = useState('');
     const [isSortOpen, setIsSortOpen] = useState(false);
     const [docs, setDocs] = useState([]);
-    const [status, setStatus] = useState('ready');
     const uid = localStorage.getItem("uid");
+
+    const [isLoading, setIsLoading] = useState(true);
+    const [isWatchlistEmpty, setIsWatchlistEmpty] = useState(false);
 
     useEffect(() => { 
         const res = db.collection('movies').onSnapshot(snapshot => {
             if(snapshot.size) {
-                setStatus('loading');
                 const results = [];
                 const docsId = [];
                 snapshot.forEach(doc => {
@@ -130,14 +109,14 @@ const WatchList = () => {
                 
                 if(results.length) {
                     setMovies(results);
-                    setStatus('done');
                 } else {
-                    setStatus('empty');
+                    setIsWatchlistEmpty(true);
                 }
                 setDocs(docsId);
             } else {
-                setStatus('empty');
+                setIsWatchlistEmpty(true);
             }
+            setIsLoading(false);
         });   
         
         return () => {
@@ -146,27 +125,43 @@ const WatchList = () => {
 
     }, [uid]);
 
-    let listItem = <Loader type="TailSpin" color={theme.colors.accent} height={400} width={100} timeout={5000} />;
-
-    if(status === "empty") {
-        listItem = <Error currentTheme={currentTheme} > Your list is empty :( </Error>
-    } else {
-        listItem =  movies.map((movie) => <WatchListItem
-                        key={movie.title}
-                        title={movie.title}
-                        year={movie.year}
-                        duration={movie.duration}
-                        genres={movie.genres}
-                        docs={docs}
-                    />);
+    const sortMovies = (movies, setMovies, type) => {
+        if(type === 'a-z') {
+            setMovies(movies.sort((a, b) => {
+                if(a.title < b.title) return -1; 
+                if(a.title > b.title) return 1; 
+                return 0;
+            }));
+        }
+        if(type === 'earliest') {
+            setMovies(movies.sort((a, b) => {
+                return a.addedAt - b.addedAt;
+            }));
+        }
+        if(type === 'latest') {
+            setMovies(movies.sort((a, b) => {
+                return b.addedAt - a.addedAt;
+            }));
+        }
+        
     }
-
+    
     return ( 
         <Main>
             <Menu
                 current="Watch list"
             />
-            {movies.length ?
+            { isWatchlistEmpty && <Error currentTheme={currentTheme}> Nothing found :( </Error> }
+            { isLoading && loader }
+            { !isLoading && !isWatchlistEmpty && movies.map((movie) => <WatchListItem
+                key={movie.title}
+                title={movie.title}
+                year={movie.year}
+                duration={movie.duration}
+                genres={movie.genres}
+                docs={docs}
+                />) }
+            {movies.length > 0 &&
             <>
                 <Sort>
                     <SortIcon onClick={() => setIsSortOpen(!isSortOpen)} src={currentTheme === "light" ? SortBlack : SortWhite } />
@@ -174,33 +169,27 @@ const WatchList = () => {
                 <SortOptions onClick={() => setIsSortOpen(!isSortOpen)} currentTheme={currentTheme} isSortOpen={isSortOpen}>
                     <SortOption 
                         currentTheme={currentTheme} 
-                        onClick={() => sortMovies(movies, setMovies, 'a-z', setSortType)}
+                        onClick={() => sortMovies(movies, setMovies, 'a-z')}
                     >
                         A-Z
                     </SortOption>
                     <SortOption 
                         currentTheme={currentTheme} 
-                        onClick={() => sortMovies(movies, setMovies, 'earliest', setSortType)}
+                        onClick={() => sortMovies(movies, setMovies, 'earliest')}
                     >
                         Earliest added
                     </SortOption>
                     <SortOption 
                         currentTheme={currentTheme} 
-                        onClick={() => sortMovies(movies, setMovies, 'latest', setSortType)}
+                        onClick={() => sortMovies(movies, setMovies, 'latest')}
                     >
                         Latest added
                     </SortOption>
                 </SortOptions>
                 <CloseBox onClick={() => setIsSortOpen(!isSortOpen)} isSortOpen={isSortOpen} />
             </>
-            :
-            null
             }
-            {status === 'ready' ?
-            <Loader type="TailSpin" color={theme.colors.accent} height={400} width={100} timeout={10000} />
-            : null
-            }   
-            {listItem}
+
         </Main>
         
     );

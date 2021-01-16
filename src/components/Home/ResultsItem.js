@@ -129,26 +129,7 @@ const ErrorMessage = styled.p`
     text-align: center;
 `
 
-const addToList = (movie, uid, isSignedIn, setErrorMessage) => {
-    if(isSignedIn) {
-        const newItem = {
-            [uid]: {
-                    title: movie.title,
-                    year: movie.year,
-                    duration: movie.duration,
-                    rate: movie.rate,
-                    genres: movie.genres,
-                    description: movie.description,
-                    addedAt: Date.now()
-            }
-        };
-    
-        db.collection('movies').add(newItem);
-    } else {
-        setErrorMessage("You must be logged in to do that");
-    }
-    
-}
+
 
 const ResultsItem = ({ movie, isSignedIn, uid }) => {
     const {currentTheme} = useContext(ThemeContext);
@@ -183,6 +164,27 @@ const ResultsItem = ({ movie, isSignedIn, uid }) => {
         }
 
     }, [title, uid]);
+
+    const addToList = (movie, uid, isSignedIn, setErrorMessage) => {
+        if(isSignedIn) {
+            const newItem = {
+                [uid]: {
+                        title: movie.title,
+                        year: movie.year,
+                        duration: movie.duration,
+                        rate: movie.rate,
+                        genres: movie.genres,
+                        description: movie.description,
+                        addedAt: Date.now()
+                }
+            };
+        
+            db.collection('movies').add(newItem);
+        } else {
+            setErrorMessage("You must be logged in to do that");
+        }
+        
+    }
 
     return ( 
         <>

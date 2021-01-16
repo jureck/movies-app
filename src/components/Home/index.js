@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { theme } from '../../themes/GlobalTheme';
 import MainPage from './MainPage';
 import Menu from '../Menu/index';
-import { apiAddress, apiKey } from '../../services/api/config';
+import { apiAddress, apiKey } from '../../services/api/config'; 
 import { ThemeContext } from '../../context/ThemeContext';
 
 const Main = styled.div`
@@ -18,15 +18,16 @@ const HeaderText = styled.p`
    text-align: center;
    margin-top: 100px;
 `
-const getDataFromApi = async (title) => {
-    const movieTitle = title;
-    const response = await fetch(`${apiAddress}${apiKey}&?&t=${movieTitle}`);
-    const result = await response.json();
-    return result;
-}
 
 const Home = () => {
     const {currentTheme} = useContext(ThemeContext);
+    
+    const getDataFromApi = async (title) => {
+        const movieTitle = title;
+        const response = await fetch(`${apiAddress}?apikey=${apiKey}&?&t=${movieTitle}`);
+        const result = await response.json();
+        return result;
+    }    
 
     return ( 
         <Main>

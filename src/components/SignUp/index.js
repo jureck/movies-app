@@ -92,28 +92,7 @@ const Redirector = styled.a`
     color: ${({ currentTheme }) => theme[currentTheme].colors.syntax};
 `
 
-const handleSubmit = async (e, username, email, password, setPasswordError, setEmailError) => {
-    e.preventDefault();
-    if(password.length < 6) {
-        setPasswordError('TOO_SHORT');
-        
-    } else {
-        setPasswordError('');
-        setEmailError('');
-        await auth().createUserWithEmailAndPassword(email, password)
-        .then( async (cred) => {
-            if(cred.user) {
-                await cred.user.updateProfile({displayName: username});
-            }
-        })
-        .then(() => window.location.href = `${basename}/`)
-        .catch(err => {
-            if(err.code === "auth/email-already-in-use") {
-                setEmailError('EMAIL_IN_USE');
-            }
-        });
-    }
-}
+
 
 const SignUp = () => {
     
@@ -125,6 +104,29 @@ const SignUp = () => {
     const [emailError, setEmailError] = useState('');
     const [passwordError, setPasswordError] = useState('');
 
+    const handleSubmit = async (e, username, email, password) => {
+        e.preventDefault();
+        if(password.length < 6) {
+            setPasswordError('TOO_SHORT');
+            
+        } else {
+            setPasswordError('');
+            setEmailError('');
+            await auth().createUserWithEmailAndPassword(email, password)
+            .then( async (cred) => {
+                if(cred.user) {
+                    await cred.user.updateProfile({displayName: username});
+                }
+            })
+            .then(() => window.location.href = `${basename}/`)
+            .catch(err => {
+                if(err.code === "auth/email-already-in-use") {
+                    setEmailError('EMAIL_IN_USE');
+                }
+            });
+        }
+    }
+
     return (
         <>
 
@@ -134,7 +136,7 @@ const SignUp = () => {
         <HeroText currentTheme={currentTheme} >
             Create free acount here
         </HeroText>
-        <Form onSubmit={(e) => handleSubmit(e, username, email, password, setPasswordError, setEmailError)}>
+        <Form onSubmit={(e) => handleSubmit(e, username, email, password)}>
             <Label 
                 htmlFor="username" 
                 currentTheme={currentTheme}

@@ -42,6 +42,7 @@ const SearchButton = styled.button`
     background-color: ${theme.colors.accent};
     border-radius: ${theme.properties.radiusBig};
     transition: all .3s ease-in-out;
+    cursor: pointer;
 
     &:hover {
         background: ${theme.colors.accentAlt};
@@ -108,21 +109,30 @@ const RecentlySearchedItem = styled.article`
     margin: 0px 10px;
     flex: 0 0 auto;
     width: 230px;
+    min-height: 402px;
 
     @media (max-width: 1050px) {
-        width: 20%;
+        width: 31%;
     }
 
     @media (max-width: 650px) {
-        width: 37vw;
+        width: 36vw;
     }
+
 `
 
 const ItemPoster = styled.img`
-    height: auto;
+    display: block;
+    height: 340px;
     width: 100%;
-    max-height: 560px;
 
+    @media (max-width: 1050px) {
+        height: 40vw;
+    }
+
+    @media (max-width: 650px) {
+        height: 50vw;
+    }
 `
 
 const ItemTitle = styled.p`
@@ -141,50 +151,9 @@ const ItemYear = styled.p`
     font-size: ${theme.fonts.s};
 `
 
-const onSubmit = async (e, props, title, movie, setMovie, setResStatus, uid) => {
-    setResStatus('loading');
-    e.preventDefault();
-    const result = await props.getDataFromApi(title);
-    if(result.Response === "True") {
-        setMovie({
-            title: result.Title,
-            year: result.Year,
-            rate: result.Ratings.length > 0 ? result.Ratings[0].Value : "N/A",
-            duration: result.Runtime,
-            genres: result.Genre,
-            description: result.Plot,
-            error: false,
-            img: result.Poster === "N/A" ? NoPoster : result.Poster,
-        });
+const MainPage = (props) => {
 
-        const recentMovie = {
-            [uid]: {
-                title: result.Title,
-                img: result.Poster === "N/A" ? NoPoster : result.Poster,
-                year: result.Year,
-            },
-            addedAt: Date.now(),
-        }
-        db.collection('history').add(recentMovie);
-    } else {
-        setMovie({...movie, error: true});
-    }
-    if(!result.Title) {
-        setResStatus('empty');
-    }
-    else setResStatus('done');
-
-    return {};
-}
-
-const handleChange = (e, setTitle) => {
-    const value = e.target.value;
-    setTitle(value);
-}
-
-
-
-const SearchBar = (props) => {
+    const loader = <Loader type="TailSpin" color={theme.colors.accent} height={200} width={100} timeout={3000} />;
     const [isSignedIn, setIsSignedIn] = useState(false);
     const [uid, setUid] = useState('');
     const {currentTheme} = useContext(ThemeContext);
@@ -199,8 +168,51 @@ const SearchBar = (props) => {
         description: '',
         error: false
     });
-    const [resStatus, setResStatus] = useState('ready');
+    const [isLoading, setIsLoading] = useState(false);
+    const [isMovieFound, setIsMovieFound] = useState(true);
     const [searched, setSearched] = useState([]);
+
+    const onSubmit = async (e, props, title, movie, uid) => {
+        setIsLoading(true);
+        e.preventDefault();
+        const result = await props.getDataFromApi(title);
+        if(result.Response === "True") {
+            setMovie({
+                title: result.Title,
+                year: result.Year,
+                rate: result.Ratings.length > 0 ? result.Ratings[0].Value : "N/A",
+                duration: result.Runtime,
+                genres: result.Genre,
+                description: result.Plot,
+                error: false,
+                img: result.Poster === "N/A" ? NoPoster : result.Poster,
+            });
+    
+            const recentMovie = {
+                [uid]: {
+                    title: result.Title,
+                    img: result.Poster === "N/A" ? NoPoster : result.Poster,
+                    year: result.Year,
+                },
+                addedAt: Date.now(),
+            }
+            db.collection('history').add(recentMovie);
+        } else {
+            setMovie({...movie, error: true});
+        }
+        if(!result.Title) {
+            setIsMovieFound(false);
+        }
+        setIsLoading(false);
+    
+        return {};
+    }
+
+    
+    const handleChange = (e) => {
+        const value = e.target.value;
+        setTitle(value);
+    }
 
     React.useEffect(() => {
         auth().onAuthStateChanged((user) => {
@@ -241,29 +253,20 @@ const SearchBar = (props) => {
 
     }, [uid]);
    
-    
-    let resultItem = "";
-
-    if(resStatus === "empty") {
-        resultItem = <Error currentTheme={currentTheme}> Nothing found :( </Error>
-
-    } else if(resStatus === "loading") {   
-        resultItem = <Loader type="TailSpin" color={theme.colors.accent} height={200} width={100} timeout={3000} />;
-    } else {
-        resultItem =  <ResultsItem uid={uid} isSignedIn={isSignedIn} movie={movie} />;
-    }
 
     return ( 
         <>
             <SearchBlock>
-                <Form onSubmit={(e) => onSubmit(e, props, title, movie, setMovie, setResStatus, uid)}>
-                    <SearchInput currentTheme={currentTheme} value={title} onChange={(e) => handleChange(e, setTitle)}/>
+                <Form onSubmit={(e) => onSubmit(e, props, title, movie, uid)}>
+                    <SearchInput currentTheme={currentTheme} value={title} onChange={(e) => handleChange(e)}/>
                     <SearchButton>
                         <SearchImg src={SearchIcon} />
                     </SearchButton>
                 </Form>
             </SearchBlock>
-            { resultItem }
+            { !isMovieFound && <Error currentTheme={currentTheme}> Nothing found :( </Error> }
+            { isLoading && loader }
+            { !isLoading && isMovieFound && <ResultsItem uid={uid} isSignedIn={isSignedIn} movie={movie} /> }
             { searched.length > 0 && <RecentlyHeader  currentTheme={currentTheme}>Recently searched</RecentlyHeader> }
             <RecentlySearched>
                 {searched.length > 0 && searched.map((movie) => 
@@ -283,4 +286,4 @@ const SearchBar = (props) => {
     );
 }
  
-export default SearchBar;
+export default MainPage;

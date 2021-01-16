@@ -93,24 +93,7 @@ const Redirector = styled.a`
 `
 
 
-const handleSubmit = async (e, email, password, setEmailError, setPasswordError) => {
-    e.preventDefault();
-    setEmailError('');
-    setPasswordError('');
-    await auth().signInWithEmailAndPassword(email, password)
-    .then((cred) => {
-        localStorage.setItem("uid", cred.user.uid);
-        window.location.href = `${basename}/`;
-    })
-    .catch((err) => {
-        if(err.code === "auth/user-not-found") {
-            setEmailError("WRONG_EMAIL");
-        }
-        if(err.code === "auth/wrong-password") {
-            setPasswordError("WRONG_PASSWORD");
-        }
-    });
-}
+
 
 const SignIn = () => {
     const {currentTheme} = useContext(ThemeContext);
@@ -119,6 +102,25 @@ const SignIn = () => {
     const [password, setPassword] = useState('');
     const [passwordError, setPasswordError] = useState('');
     const [emailError, setEmailError] = useState('');
+
+    const handleSubmit = async (e, email, password) => {
+        e.preventDefault();
+        setEmailError('');
+        setPasswordError('');
+        await auth().signInWithEmailAndPassword(email, password)
+        .then((cred) => {
+            localStorage.setItem("uid", cred.user.uid);
+            window.location.href = `${basename}/`;
+        })
+        .catch((err) => {
+            if(err.code === "auth/user-not-found") {
+                setEmailError("WRONG_EMAIL");
+            }
+            if(err.code === "auth/wrong-password") {
+                setPasswordError("WRONG_PASSWORD");
+            }
+        });
+    }
 
     return ( 
         <>
@@ -129,7 +131,7 @@ const SignIn = () => {
         <HeroText currentTheme={currentTheme} >
             Sign in to your account
         </HeroText>
-        <Form onSubmit={(e) => handleSubmit(e, email, password, setEmailError, setPasswordError)}>
+        <Form onSubmit={(e) => handleSubmit(e, email, password)}>
             <Label 
                 htmlFor="email" 
                 currentTheme={currentTheme}>Email
