@@ -172,7 +172,7 @@ const MainPage = (props) => {
     const [isMovieFound, setIsMovieFound] = useState(true);
     const [searched, setSearched] = useState([]);
 
-    const onSubmit = async (e, props, title, movie, uid) => {
+    const handleSubmit = async (e, props, title, movie, uid) => {
         setIsLoading(true);
         e.preventDefault();
         const result = await props.getDataFromApi(title);
@@ -196,7 +196,10 @@ const MainPage = (props) => {
                 },
                 addedAt: Date.now(),
             }
-            db.collection('history').add(recentMovie);
+            const recentMovies = await db.collection('history').orderBy("addedAt").get();
+            const lastOfRecent = recentMovies.docs.map(doc => doc.data()[uid]?.title).filter(title => title !== undefined).reverse()[0];
+
+            if(lastOfRecent !== result.Title) db.collection('history').add(recentMovie);
         } else {
             setMovie({...movie, error: true});
         }
@@ -204,8 +207,8 @@ const MainPage = (props) => {
             setIsMovieFound(false);
         }
         setIsLoading(false);
-    
-        return {};
+        
+        return null;
     }
 
     
@@ -240,7 +243,7 @@ const MainPage = (props) => {
                         }
                     }
                 );
-                results = results.sort((a,b) => (a.addedAt < b.addedAt) ? 1 : ((b.addedAt < a.addedAt) ? -1 : 0)).slice(0, 4);
+                results.sort((a,b) => (a.addedAt < b.addedAt) ? 1 : ((b.addedAt < a.addedAt) ? -1 : 0)).slice(0, 4);
                 if(results.length) {
                     setSearched(results);
                 }
@@ -252,12 +255,11 @@ const MainPage = (props) => {
         }
 
     }, [uid]);
-   
 
     return ( 
         <>
             <SearchBlock>
-                <Form onSubmit={(e) => onSubmit(e, props, title, movie, uid)}>
+                <Form onSubmit={(e) => handleSubmit(e, props, title, movie, uid)}>
                     <SearchInput currentTheme={currentTheme} value={title} onChange={(e) => handleChange(e)}/>
                     <SearchButton>
                         <SearchImg src={SearchIcon} />
@@ -267,7 +269,8 @@ const MainPage = (props) => {
             { !isMovieFound && <Error currentTheme={currentTheme}> Nothing found :( </Error> }
             { isLoading && loader }
             { !isLoading && isMovieFound && <ResultsItem uid={uid} isSignedIn={isSignedIn} movie={movie} /> }
-            { searched.length > 0 && <RecentlyHeader  currentTheme={currentTheme}>Recently searched</RecentlyHeader> }
+            { localStorage.getItem("uid") === 'null' ? null : <RecentlyHeader  currentTheme={currentTheme}>Recently searched</RecentlyHeader> }
+            { searched.length < 1 && localStorage.getItem("uid") !== 'null' ? loader : null}
             <RecentlySearched>
                 {searched.length > 0 && searched.map((movie) => 
                     <RecentlySearchedItem key={movie.addedAt}>

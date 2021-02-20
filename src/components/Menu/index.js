@@ -109,7 +109,8 @@ const UserInfo = styled.div`
     display: flex;
 `
 const UserImg = styled.img`
-    margin: 0px 20px;
+    height: 26px;
+    margin: 12px 20px;
 `
 const Name = styled.p`
     color: ${({ currentTheme }) => theme[currentTheme].colors.syntax};
