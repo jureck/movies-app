@@ -1,10 +1,12 @@
 # movies-app
 This app allows you to search for films or series and - if you have an account - adding to your watchlist.
+
+## Demo
+https://jureck.github.io/movies-app/#/
 ## Details
 Firebase - for saving watchlist items in cloud.<br>
 Context API - for theme switching.<br>
-Styled components.<br>
-React Router.
+Used Styled components and React Router also
 
 ## Installation instructions 
 
@@ -21,4 +23,4 @@ To start Server:
 
 To visit app:
 
-`localhost:3000/` 
+`http://localhost:3000/movies-app/#/` 

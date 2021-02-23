@@ -196,8 +196,8 @@ const MainPage = (props) => {
                 },
                 addedAt: Date.now(),
             }
-            const recentMovies = await db.collection('history').orderBy("addedAt").get();
-            const lastOfRecent = recentMovies.docs.map(doc => doc.data()[uid]?.title).filter(title => title !== undefined).reverse()[0];
+            const recentMovies = await db.collection('history').orderBy("addedAt", "desc").get();
+            const lastOfRecent = recentMovies.docs.map(doc => doc.data()[uid]?.title).filter(title => title !== undefined)[0];
 
             if(lastOfRecent !== result.Title) db.collection('history').add(recentMovie);
         } else {
@@ -229,7 +229,7 @@ const MainPage = (props) => {
     });
 
     React.useEffect(() => { 
-        const res = db.collection('history').onSnapshot(snapshot => {
+        const res = db.collection('history').orderBy("addedAt").onSnapshot(snapshot => {
             if(snapshot.size) {
                 let results = [];
                 snapshot.forEach(doc => {
@@ -243,9 +243,9 @@ const MainPage = (props) => {
                         }
                     }
                 );
-                results.sort((a,b) => (a.addedAt < b.addedAt) ? 1 : ((b.addedAt < a.addedAt) ? -1 : 0)).slice(0, 4);
+                
                 if(results.length) {
-                    setSearched(results);
+                    setSearched(results.slice(0, 4));
                 }
             }
         });   
