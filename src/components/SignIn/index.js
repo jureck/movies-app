@@ -172,7 +172,7 @@ const SignIn = () => {
                 type="submit" 
                 currentTheme={currentTheme}
             >
-                Sign up
+                Sign in
             </Submit>
         </Form>
         <Redirector 

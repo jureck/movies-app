@@ -198,8 +198,8 @@ const MainPage = (props) => {
             }
             const recentMovies = await db.collection('history').orderBy("addedAt", "desc").get();
             const lastOfRecent = recentMovies.docs.map(doc => doc.data()[uid]?.title).filter(title => title !== undefined)[0];
-
-            if(lastOfRecent !== result.Title) db.collection('history').add(recentMovie);
+            
+            if(lastOfRecent !== result.Title && lastOfRecent) db.collection('history').add(recentMovie);
         } else {
             setMovie({...movie, error: true});
         }
