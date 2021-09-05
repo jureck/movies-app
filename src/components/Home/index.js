@@ -18,6 +18,35 @@ const HeaderText = styled.p`
    text-align: center;
    margin-top: 100px;
 `
+const Sitename = styled.p`
+    font-family: 'Unlock';
+    height: 80px;
+    line-height: 80px;
+    display: block;
+    color: #d30303ee;
+    font-size: 60px;
+    text-transform: uppercase;
+    position: absolute;
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+    
+    @media (max-width: 900px) {
+        font-size: 40px;
+        line-height: 50px;
+        height: 60px;
+    }
+    @media (max-width: 400px) {
+        font-size: 30px;
+        line-height: 50px;
+        height: 60px;
+    }
+    @media (max-width: 300px) {
+        font-size: 20px;
+        line-height: 50px;
+        height: 60px;
+    }
+`
 
 const Home = () => {
     const {currentTheme} = useContext(ThemeContext);
@@ -31,9 +60,10 @@ const Home = () => {
 
     return ( 
         <Main>
-            <Menu 
-                current="Home"
-            />
+            <Menu />
+            <Sitename currentTheme={currentTheme}>
+                movies-app   
+            </Sitename>
             <HeaderText currentTheme={currentTheme}>
                 Start searching
             </HeaderText>

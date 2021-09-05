@@ -54,6 +54,7 @@ const Hamburger = styled.div`
     height: 50px;
     position: relative;
     margin: 0px 20px 0px 10px;
+    z-index: 10;
 `
 const HamburgerInner = styled.div`
     width: 36px;
@@ -118,6 +119,7 @@ const Name = styled.p`
     font-weight: 500;
     width: 60%;
 `
+
 
 
 
