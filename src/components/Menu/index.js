@@ -140,7 +140,7 @@ const Menu = ({ current }) => {
             }
         }
         else {
-            localStorage.setItem("uid", null);
+            localStorage.removeItem("uid");
         }
     });
 

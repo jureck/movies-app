@@ -187,6 +187,7 @@ const MainPage = (props) => {
                 error: false,
                 img: result.Poster === "N/A" ? NoPoster : result.Poster,
             });
+            setIsMovieFound(true);
     
             const recentMovie = {
                 [uid]: {
@@ -198,8 +199,9 @@ const MainPage = (props) => {
             }
             const recentMovies = await db.collection('history').orderBy("addedAt", "desc").get();
             const lastOfRecent = recentMovies.docs.map(doc => doc.data()[uid]?.title).filter(title => title !== undefined)[0];
-            
-            if(lastOfRecent !== result.Title && lastOfRecent) db.collection('history').add(recentMovie);
+            if(lastOfRecent !== result.Title) {
+                db.collection('history').add(recentMovie);
+            }
         } else {
             setMovie({...movie, error: true});
         }
@@ -207,7 +209,6 @@ const MainPage = (props) => {
             setIsMovieFound(false);
         }
         setIsLoading(false);
-        
         return null;
     }
 
@@ -243,7 +244,6 @@ const MainPage = (props) => {
                         }
                     }
                 );
-                
                 if(results.length) {
                     setSearched(results.slice(0, 4));
                 }
@@ -269,8 +269,8 @@ const MainPage = (props) => {
             { !isMovieFound && <Error currentTheme={currentTheme}> Nothing found :( </Error> }
             { isLoading && loader }
             { !isLoading && isMovieFound && <ResultsItem uid={uid} isSignedIn={isSignedIn} movie={movie} /> }
-            { localStorage.getItem("uid") === 'null' ? null : <RecentlyHeader  currentTheme={currentTheme}>Recently searched</RecentlyHeader> }
-            { searched.length < 1 && localStorage.getItem("uid") !== 'null' ? loader : null}
+            { localStorage.getItem("uid") !== null && searched.length ? <RecentlyHeader  currentTheme={currentTheme}>Recently searched</RecentlyHeader> : null }
+            { searched.length < 1 && localStorage.getItem("uid") !== null ? loader : null}
             <RecentlySearched>
                 {searched.length > 0 && searched.map((movie) => 
                     <RecentlySearchedItem key={movie.addedAt}>
