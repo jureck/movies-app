@@ -91,17 +91,18 @@ const WatchList = () => {
                 const docsId = [];
                 snapshot.forEach(doc => {
                         if(doc.data()[uid]) {
+                            const movie = doc.data()[uid];
                             results.push({ 
-                                title: doc.data()[uid].title, 
-                                year: doc.data()[uid].year, 
-                                rate: doc.data()[uid].rate, 
-                                genres: doc.data()[uid].genres, 
-                                duration: doc.data()[uid].duration, 
-                                description: doc.data()[uid].description,
-                                addedAt: doc.data()[uid].addedAt
+                                title: movie.title, 
+                                year: movie.year, 
+                                rate: movie.rate, 
+                                genres: movie.genres, 
+                                duration: movie.duration, 
+                                description: movie.description,
+                                addedAt: movie.addedAt
                             });
                             docsId.push({
-                                [doc.data()[uid].title]: doc.id
+                                [movie.title]: doc.id
                             });
                         }
                     }
@@ -148,9 +149,7 @@ const WatchList = () => {
     
     return ( 
         <Main>
-            <Menu
-                current="Watch list"
-            />
+            <Menu />
             { isWatchlistEmpty && <Error currentTheme={currentTheme}> Nothing found :( </Error> }
             { isLoading && loader }
             { !isLoading && !isWatchlistEmpty && movies.map((movie) => <WatchListItem

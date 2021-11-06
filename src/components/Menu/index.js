@@ -120,29 +120,27 @@ const Name = styled.p`
     width: 60%;
 `
 
-
-
-
-
-
-const Menu = ({ current }) => {
+const Menu = () => {
     const {currentTheme, setCurrentTheme} = useContext(ThemeContext);
     const [isOpen, setIsOpen] = useState(false);
     const [isSignedIn, setIsSignedIn] = useState(false);
     const [username, setUsername] = useState('');
-    
-    auth().onAuthStateChanged((user) => {
-        if(user) {
-            setUsername(user.displayName);
-            localStorage.setItem("uid", user.uid);
-            if(user.uid) {
-                setIsSignedIn(true);
+    let current = decodeURI(window.location.hash.slice(2, -1));
+
+    React.useEffect(() => {
+        auth().onAuthStateChanged((user) => {
+            if(user) {
+                setUsername(user.displayName);
+                localStorage.setItem("uid", user.uid);
+                if(user.uid) {
+                    setIsSignedIn(true);
+                }
             }
-        }
-        else {
-            localStorage.removeItem("uid");
-        }
-    });
+            else {
+                localStorage.removeItem("uid");
+            }
+        });
+    }, []);
 
     const ToggleTheme = (currentTheme, setCurrentTheme) => {
         const newTheme = currentTheme === "light" ? "dark" : "light";
@@ -161,15 +159,17 @@ const Menu = ({ current }) => {
             </CurrentPage>
             <MainMenu currentTheme={currentTheme} isOpen={isOpen}>
                 <MenuItem 
+                    onClick={() => setIsOpen(!isOpen)}
                     name="Home"
                     img="home.svg"
                     path={`${basename}/`}
                     current={current}
                 />
-                {isSignedIn && <MenuItem 
+                {isSignedIn && <MenuItem
+                    onClick={() => setIsOpen(!isOpen)} 
                     name="Watch list"
                     img="watch.svg"
-                    path={`${basename}/#/watchlist/`}
+                    path={`${basename}/#/Watch list/`}
                     current={current}
                     />
                 }
@@ -194,13 +194,13 @@ const Menu = ({ current }) => {
                             <MenuItem
                                 name="Sign in"
                                 img="signin.svg"
-                                path={`${basename}/#/signin/`}
+                                path={`${basename}/#/Sign in/`}
                                 current={current}
                             />
                             <MenuItem
                                 name="Sign up"
                                 img="signup.svg"
-                                path={`${basename}/#/signup/`}
+                                path={`${basename}/#/Sign up/`}
                                 current={current}
                             />
                         </>

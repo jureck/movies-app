@@ -20,9 +20,9 @@ function App() {
           <GlobalStyle />
           <Switch>
             <Route exact path='/' component={Home} />
-            <Route path='/watchlist' component={WatchList} />
-            <Route path='/signup' component={SignUp} />
-            <Route path='/signin' component={SignIn} />
+            <Route path='/Watch list' component={WatchList} />
+            <Route path='/Sign up' component={SignUp} />
+            <Route path='/Sign in' component={SignIn} />
             <Route component={NotFound} />
           </Switch>
         </ThemeContextProvider>

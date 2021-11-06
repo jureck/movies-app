@@ -37,9 +37,8 @@ const Name = styled.p`
 
 const MenuItem = ({ img, name, current, path, signOut }) => {
     const {currentTheme} = useContext(ThemeContext);
-
     return ( 
-        <Item onClick={signOut ? () => auth().signOut().then(() => window.location.href = `${basename}/`) : null} currentTheme={currentTheme} href={path} current={current} name={name} >
+        <Item onClick={signOut ? () => auth().signOut().then(() => window.location.href = `${basename}/`) : null} currentTheme={currentTheme} href={path} current={current === '' ? "Home" : current} name={name} >
                 <Icon
                     src={require(`../../assets/icons/${img}`)}
                 />    

@@ -7,8 +7,8 @@ import { theme } from '../../themes/GlobalTheme';
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import Loader from 'react-loader-spinner';
 import { ThemeContext } from '../../context/ThemeContext';
-import { auth } from '../../services/firebase/config';
 import { db } from '../../services/firebase/config';
+import { apiAddress, apiKey } from '../../services/api/config'; 
 
 const SearchBlock = styled.div`
     width: 80%;
@@ -151,11 +151,9 @@ const ItemYear = styled.p`
     font-size: ${theme.fonts.s};
 `
 
-const MainPage = (props) => {
+const MainPage = ({ uid, isSignedIn}) => {
 
     const loader = <Loader type="TailSpin" color={theme.colors.accent} height={200} width={100} timeout={3000} />;
-    const [isSignedIn, setIsSignedIn] = useState(false);
-    const [uid, setUid] = useState('');
     const {currentTheme} = useContext(ThemeContext);
 
     const [title, setTitle] = useState('');
@@ -172,10 +170,16 @@ const MainPage = (props) => {
     const [isMovieFound, setIsMovieFound] = useState(true);
     const [searched, setSearched] = useState([]);
 
-    const handleSubmit = async (e, props, title, movie, uid) => {
+    const getDataFromApi = async (title) => {
+        const response = await fetch(`${apiAddress}?apikey=${apiKey}&?&t=${title}`);
+        const result = await response.json();
+        return result;
+    }    
+
+    const handleSubmit = async (e, title, movie, uid) => {
         setIsLoading(true);
         e.preventDefault();
-        const result = await props.getDataFromApi(title);
+        const result = await getDataFromApi(title);
         if(result.Response === "True") {
             setMovie({
                 title: result.Title,
@@ -218,17 +222,6 @@ const MainPage = (props) => {
         setTitle(value);
     }
 
-    React.useEffect(() => {
-        auth().onAuthStateChanged((user) => {
-            if(user) {
-                if(user.uid) {
-                    setUid(user.uid);
-                    setIsSignedIn(true);
-                }
-            }
-        });
-    });
-
     React.useEffect(() => { 
         const res = db.collection('history').orderBy("addedAt").onSnapshot(snapshot => {
             if(snapshot.size) {
@@ -259,7 +252,7 @@ const MainPage = (props) => {
     return ( 
         <>
             <SearchBlock>
-                <Form onSubmit={(e) => handleSubmit(e, props, title, movie, uid)}>
+                <Form onSubmit={(e) => handleSubmit(e, title, movie, uid)}>
                     <SearchInput currentTheme={currentTheme} value={title} onChange={(e) => handleChange(e)}/>
                     <SearchButton>
                         <SearchImg src={SearchIcon} />
