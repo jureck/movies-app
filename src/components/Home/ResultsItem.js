@@ -7,6 +7,7 @@ import { ThemeContext } from '../../context/ThemeContext';
 
 const Item = styled.div`
     display: ${({ isEmpty }) => isEmpty ? "none" : "flex" };
+    flex-direction: column;
     width: 90%;
     min-height: 100px;
     background-color: ${({ currentTheme }) => theme[currentTheme].colors.secondary};
@@ -14,9 +15,16 @@ const Item = styled.div`
     margin-top: 20px;
     margin-bottom: 150px;
     border-radius: ${theme.properties.radiusSmall};
+    align-items: flex-start;
+    justify-content: center;
 
     @media (min-width: 700px) {
         width: 50%;
+    }
+
+    @media (min-width: 1000px) {
+        width: 70%;
+        flex-direction: row;
     }
 `
 const TextWrapper = styled.div`
@@ -35,11 +43,13 @@ const Title = styled.p`
 `
 const Poster = styled.img`
     display: block;
-    margin: 5px 10px 5px 5px;
-    height: 90px;
+    margin: 10px 0px;
+    height: auto;
+    width: 100%;
 
-    @media (min-width: 700px) {
-        height: 400px;
+    @media (min-width: 1000px) {
+        margin: 5px 10px 5px 5px;
+        max-width: 300px;
     }
 `
 const Rate = styled.p`
