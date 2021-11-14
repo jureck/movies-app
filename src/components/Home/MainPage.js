@@ -164,7 +164,6 @@ const MainPage = ({ uid, isSignedIn}) => {
         duration: '',
         genres: '',
         description: '',
-        error: false
     });
     const [isLoading, setIsLoading] = useState(false);
     const [isMovieFound, setIsMovieFound] = useState(true);
@@ -176,7 +175,7 @@ const MainPage = ({ uid, isSignedIn}) => {
         return result;
     }    
 
-    const handleSubmit = async (e, title, movie, uid) => {
+    const handleSubmit = async (e, title, uid) => {
         setIsLoading(true);
         e.preventDefault();
         const result = await getDataFromApi(title);
@@ -188,7 +187,6 @@ const MainPage = ({ uid, isSignedIn}) => {
                 duration: result.Runtime,
                 genres: result.Genre,
                 description: result.Plot,
-                error: false,
                 img: result.Poster === "N/A" ? NoPoster : result.Poster,
             });
             setIsMovieFound(true);
@@ -207,13 +205,9 @@ const MainPage = ({ uid, isSignedIn}) => {
                 db.collection('history').add(recentMovie);
             }
         } else {
-            setMovie({...movie, error: true});
-        }
-        if(!result.Title) {
             setIsMovieFound(false);
         }
         setIsLoading(false);
-        return null;
     }
 
     
@@ -252,7 +246,7 @@ const MainPage = ({ uid, isSignedIn}) => {
     return ( 
         <>
             <SearchBlock>
-                <Form onSubmit={(e) => handleSubmit(e, title, movie, uid)}>
+                <Form onSubmit={(e) => handleSubmit(e, title, uid)}>
                     <SearchInput currentTheme={currentTheme} value={title} onChange={(e) => handleChange(e)}/>
                     <SearchButton>
                         <SearchImg src={SearchIcon} />
