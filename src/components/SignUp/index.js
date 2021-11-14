@@ -195,7 +195,7 @@ const SignUp = () => {
         </Form>
         <Redirector 
             currentTheme={currentTheme} 
-            href={`${basename}/#/signin/`}
+            href={`${basename}/#/Sign in/`}
         >
             Have an account already?
         </Redirector>
