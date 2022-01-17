@@ -125,6 +125,12 @@ const ItemPoster = styled.img`
     display: block;
     height: 340px;
     width: 100%;
+    cursor: pointer;
+    transition: all .1s ease-out;
+
+    &:hover {
+        transform: scale(1.02);
+    }
 
     @media (max-width: 1050px) {
         height: 40vw;
@@ -199,7 +205,10 @@ const MainPage = ({ uid, isSignedIn}) => {
                 },
                 addedAt: Date.now(),
             }
-            const recentMovies = await db.collection('history').orderBy("addedAt", "desc").get();
+            const recentMovies = await db.collection('history')
+                                        .orderBy("addedAt", "desc")
+                                        .limit(10)
+                                        .get();
             const lastOfRecent = recentMovies.docs.map(doc => doc.data()[uid]?.title).filter(title => title !== undefined)[0];
             if(uid && lastOfRecent !== result.Title) {
                 db.collection('history').add(recentMovie);
@@ -217,12 +226,12 @@ const MainPage = ({ uid, isSignedIn}) => {
     }
 
     React.useEffect(() => { 
-        const res = db.collection('history').orderBy("addedAt").onSnapshot(snapshot => {
+        const res = db.collection('history').orderBy("addedAt", "desc").limit(4).onSnapshot(snapshot => {
             if(snapshot.size) {
                 let results = [];
                 snapshot.forEach(doc => {
                         if(doc.data()[uid]) {
-                            results.unshift({ 
+                            results.push({ 
                                 title: doc.data()[uid].title, 
                                 img: doc.data()[uid].img,
                                 year: doc.data()[uid].year,  
@@ -232,7 +241,7 @@ const MainPage = ({ uid, isSignedIn}) => {
                     }
                 );
                 if(results.length) {
-                    setSearched(results.slice(0, 4));
+                    setSearched(results);
                 }
             }
         });   
@@ -247,7 +256,7 @@ const MainPage = ({ uid, isSignedIn}) => {
         <>
             <SearchBlock>
                 <Form onSubmit={(e) => handleSubmit(e, title, uid)}>
-                    <SearchInput currentTheme={currentTheme} value={title} onChange={(e) => handleChange(e)}/>
+                    <SearchInput placeholder="Search" currentTheme={currentTheme} value={title} onChange={(e) => handleChange(e)}/>
                     <SearchButton>
                         <SearchImg src={SearchIcon} />
                     </SearchButton>
@@ -260,7 +269,7 @@ const MainPage = ({ uid, isSignedIn}) => {
             { searched.length < 1 && localStorage.getItem("uid") !== null ? loader : null}
             <RecentlySearched>
                 {searched.length > 0 && searched.map((movie) => 
-                    <RecentlySearchedItem key={movie.addedAt}>
+                    <RecentlySearchedItem onClick={(e) => handleSubmit(e, movie.title, uid)} key={movie.addedAt}>
                         <ItemPoster src={movie.img} />
                         <ItemTitle currentTheme={currentTheme}>
                             {movie.title}
