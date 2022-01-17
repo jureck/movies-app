@@ -5,6 +5,7 @@ import GlobalStyle from './components/GlobalStyle';
 import WatchList from './components/WatchList/index';
 import SignUp from './components/SignUp/index';
 import SignIn from './components/SignIn/index';
+import ResetPassword from './components/ResetPassword/index';
 import ScrollToTop from './components/ScrollToTop';
 import NotFound from './components/NotFound/index';
 import ThemeContextProvider from './context/ThemeContext';
@@ -23,6 +24,7 @@ function App() {
             <Route path='/Watch list' component={WatchList} />
             <Route path='/Sign up' component={SignUp} />
             <Route path='/Sign in' component={SignIn} />
+            <Route path='/Reset password' component={ResetPassword} />
             <Route component={NotFound} />
           </Switch>
         </ThemeContextProvider>

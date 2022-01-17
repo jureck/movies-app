@@ -36,12 +36,8 @@ const Input = styled.input`
         border: 2px solid #008ffc;
     }
 
-    &[name="password"] {
-        border: ${({ passwordError }) => passwordError === "WRONG_PASSWORD" ? "2px solid red" : "0"};
-    }
-
     &[name="email"] {
-        border: ${({ emailError }) => emailError === "WRONG_EMAIL" ? "2px solid red" : "0"};
+        border: ${({ resetError }) => resetError ? "2px solid red" : "0"};
     }
    
         
@@ -62,15 +58,7 @@ const Submit = styled.button`
         background-color: ${theme.colors.accentAlt};
     }
 `
-const ShowPassword = styled.span`
-    position: absolute;
-    right: 10px;
-    top: 12px;
-    cursor: pointer;
-`
-const EyeIcon = styled.img`
 
-`
 const HeroText = styled.p`
     display: block;
     margin: 50px auto;
@@ -78,13 +66,17 @@ const HeroText = styled.p`
     font-size: 30px;
     text-align: center;
 `
-const PasswordWrapper = styled.div`
-    position: relative;
-`
+
 const ErrorMessage = styled.p`
     color: red;
     font-size: ${theme.fonts.xs};
 `
+
+const Message = styled.p`
+    color: #2fd353;
+    font-size: ${theme.fonts.xs};
+`
+
 const Redirector = styled.a`
     display: block;
     text-align: center;
@@ -96,30 +88,21 @@ const Redirector = styled.a`
 
 
 
-const SignIn = () => {
+const ResetPassword = () => {
     const {currentTheme} = useContext(ThemeContext);
-    const [isPasswordHidden, setIsPasswordHidden] = useState(true);
     const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [passwordError, setPasswordError] = useState('');
-    const [emailError, setEmailError] = useState('');
+    const [resetError, setResetError] = useState('');
+    const [resetInfo, setResetInfo] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setEmailError('');
-        setPasswordError('');
-        await auth().signInWithEmailAndPassword(email, password)
-        .then((cred) => {
-            localStorage.setItem("uid", cred.user.uid);
-            window.location.href = `${basename}/`;
+        setResetError('');
+        await auth().sendPasswordResetEmail(email)
+        .then(() => {
+            setResetInfo("Your password has been succesfully reset. Check your inbox");
         })
-        .catch((err) => {
-            if(err.code === "auth/user-not-found") {
-                setEmailError("WRONG_EMAIL");
-            }
-            if(err.code === "auth/wrong-password") {
-                setPasswordError("WRONG_PASSWORD");
-            }
+        .catch(() => {
+            setResetError("Failed to reset");
         });
     }
 
@@ -130,7 +113,7 @@ const SignIn = () => {
             current="Sign in"
         />
         <HeroText currentTheme={currentTheme} >
-            Sign in to your account
+            Reset your password
         </HeroText>
         <Form onSubmit={handleSubmit}>
             <Label 
@@ -142,54 +125,26 @@ const SignIn = () => {
                 value={email} 
                 type="email" 
                 name="email"
-                emailError={emailError}  
+                resetError={resetError}  
                 currentTheme={currentTheme} 
             />
-            {emailError && <ErrorMessage>Email not found</ErrorMessage>}
-            <Label 
-                htmlFor="password" 
-                currentTheme={currentTheme}
-            >
-                Password
-            </Label>
-            <PasswordWrapper>
-                <Input 
-                    onChange={(e) => setPassword(e.target.value)} 
-                    value={password} type={isPasswordHidden ? "password" : "text" } 
-                    name="password" 
-                    passwordError={passwordError}
-                    currentTheme={currentTheme}
-                />
-                {passwordError && <ErrorMessage>Wrong password</ErrorMessage>}
-                <ShowPassword 
-                    onClick={ () => setIsPasswordHidden(!isPasswordHidden) }
-                >
-                    <EyeIcon 
-                        src={Eye}
-                    />
-                </ShowPassword>
-            </PasswordWrapper>
+            {resetInfo && <Message>{resetInfo}</Message>}
+            {resetError && <ErrorMessage>{resetError}</ErrorMessage>}
             <Submit 
                 type="submit" 
                 currentTheme={currentTheme}
             >
-                Sign in
+                Reset
             </Submit>
         </Form>
         <Redirector 
             currentTheme={currentTheme} 
-            href={`${basename}/#/Reset password/`}
+            href={`${basename}/#/Sign in/`}
         >
-            Forgot password?
-        </Redirector>
-        <Redirector 
-            currentTheme={currentTheme} 
-            href={`${basename}/#/Sign up/`}
-        >
-            Don't have an account?
+            Sign in to your account
         </Redirector>
         </>
     );
 }
  
-export default SignIn;
+export default ResetPassword;

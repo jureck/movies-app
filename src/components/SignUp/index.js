@@ -104,7 +104,7 @@ const SignUp = () => {
     const [emailError, setEmailError] = useState('');
     const [passwordError, setPasswordError] = useState('');
 
-    const handleSubmit = async (e, username, email, password) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if(password.length < 6) {
             setPasswordError('TOO_SHORT');
@@ -136,7 +136,7 @@ const SignUp = () => {
         <HeroText currentTheme={currentTheme} >
             Create free acount here
         </HeroText>
-        <Form onSubmit={(e) => handleSubmit(e, username, email, password)}>
+        <Form onSubmit={handleSubmit}>
             <Label 
                 htmlFor="username" 
                 currentTheme={currentTheme}
