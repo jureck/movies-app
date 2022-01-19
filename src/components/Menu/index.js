@@ -55,6 +55,7 @@ const Hamburger = styled.div`
     position: relative;
     margin: 0px 20px 0px 10px;
     z-index: 10;
+    cursor: pointer;
 `
 const HamburgerInner = styled.div`
     width: 36px;

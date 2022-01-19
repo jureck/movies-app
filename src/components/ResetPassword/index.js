@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { theme } from '../../themes/GlobalTheme';
 import Menu from '../Menu';
 import { ThemeContext } from '../../context/ThemeContext';
-import Eye from '../../assets/icons/eye.svg';
 import { auth } from '../../services/firebase/config';
 import { basename } from '../../App';
 

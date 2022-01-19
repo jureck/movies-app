@@ -74,7 +74,7 @@ const CloseBox = styled.div`
 
 
 const WatchList = () => {
-    const loader = <Loader type="TailSpin" color={theme.colors.accent} height={400} width={100} timeout={5000} />;
+    const loader = <Loader type="TailSpin" color={theme.colors.accent} height={400} width={100} timeout={10000} />;
     const {currentTheme} = useContext(ThemeContext);
     const [movies, setMovies] = useState([]);
     const [isSortOpen, setIsSortOpen] = useState(false);

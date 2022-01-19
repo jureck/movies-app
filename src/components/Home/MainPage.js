@@ -159,49 +159,50 @@ const ItemYear = styled.p`
 
 const MainPage = ({ uid, isSignedIn}) => {
 
-    const loader = <Loader type="TailSpin" color={theme.colors.accent} height={200} width={100} timeout={3000} />;
+    const loader = <Loader type="TailSpin" color={theme.colors.accent} height={200} width={100} timeout={20000} />;
     const {currentTheme} = useContext(ThemeContext);
 
     const [title, setTitle] = useState('');
-    const [movie, setMovie]= useState({
-        title: '',
-        year: '',
-        rate: '',
-        duration: '',
-        genres: '',
-        description: '',
-    });
+    const [movies, setMovies]= useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [isMovieFound, setIsMovieFound] = useState(true);
     const [searched, setSearched] = useState([]);
 
-    const getDataFromApi = async (title) => {
-        const response = await fetch(`${apiAddress}?apikey=${apiKey}&?&t=${title}`);
+    const getDataFromApi = async (title, isSpecific = true, imdbId) => {
+        const address = `${apiAddress}?apikey=${apiKey}&${isSpecific ? "i" : "s"}=${isSpecific ? imdbId : title}`;
+        const response = await fetch(address);
         const result = await response.json();
         return result;
     }    
 
     const handleSubmit = async (e, title, uid) => {
         setIsLoading(true);
+        setMovies([]);
         e.preventDefault();
-        const result = await getDataFromApi(title);
+        const result = await getDataFromApi(title, false);
         if(result.Response === "True") {
-            setMovie({
-                title: result.Title,
-                year: result.Year,
-                rate: result.Ratings.length > 0 ? result.Ratings[0].Value : "N/A",
-                duration: result.Runtime,
-                genres: result.Genre,
-                description: result.Plot,
-                img: result.Poster === "N/A" ? NoPoster : result.Poster,
+            const results = result.Search;
+            results.map(async (result) => {
+                const movie = await getDataFromApi(null, true, result.imdbID);
+                if(movie.Type !== "game") setMovies((prevState) => [
+                    ...prevState,
+                    {
+                        title: movie.Title,
+                        year: movie.Year,
+                        rate: movie.Ratings.length > 0 ? movie.Ratings[0].Value : "-",
+                        duration: movie.Runtime,
+                        genres: movie.Genre,
+                        description: movie.Plot,
+                        img: movie.Poster === "N/A" ? NoPoster : movie.Poster,
+                }]);
             });
+        
             setIsMovieFound(true);
-    
             const recentMovie = {
                 [uid]: {
-                    title: result.Title,
-                    img: result.Poster === "N/A" ? NoPoster : result.Poster,
-                    year: result.Year,
+                    title: results[0].Title,
+                    img: results[0].Poster === "-" ? NoPoster : results[0].Poster,
+                    year: results[0].Year,
                 },
                 addedAt: Date.now(),
             }
@@ -209,8 +210,12 @@ const MainPage = ({ uid, isSignedIn}) => {
                                         .orderBy("addedAt", "desc")
                                         .limit(10)
                                         .get();
-            const lastOfRecent = recentMovies.docs.map(doc => doc.data()[uid]?.title).filter(title => title !== undefined)[0];
-            if(uid && lastOfRecent !== result.Title) {
+            const lastOfRecent = {
+                title: recentMovies.docs.map(doc => doc.data()[uid]?.title).filter(title => title !== undefined)[0],
+                year: recentMovies.docs.map(doc => doc.data()[uid]?.year).filter(title => title !== undefined)[0]
+            }
+            
+            if(uid && lastOfRecent.title !== results[0].Title && lastOfRecent.year !== results[0].Year) {
                 db.collection('history').add(recentMovie);
             }
         } else {
@@ -225,8 +230,8 @@ const MainPage = ({ uid, isSignedIn}) => {
         setTitle(value);
     }
 
-    React.useEffect(() => { 
-        const res = db.collection('history').orderBy("addedAt", "desc").limit(4).onSnapshot(snapshot => {
+    React.useEffect(() => {
+        const res = uid ? db.collection('history').orderBy("addedAt", "desc").limit(4).onSnapshot(snapshot => {
             if(snapshot.size) {
                 let results = [];
                 snapshot.forEach(doc => {
@@ -244,13 +249,18 @@ const MainPage = ({ uid, isSignedIn}) => {
                     setSearched(results);
                 }
             }
-        });   
-        
+        })
+        : () => null;   
+
         return () => {
-            res();
+          res();
         }
 
     }, [uid]);
+
+    const sortByRate = (array) => {
+        return array.sort((a, b) => a.rate < b.rate ? 1 : -1);
+    }
 
     return ( 
         <>
@@ -264,9 +274,10 @@ const MainPage = ({ uid, isSignedIn}) => {
             </SearchBlock>
             { !isMovieFound && <Error currentTheme={currentTheme}> Nothing found :( </Error> }
             { isLoading && loader }
-            { !isLoading && isMovieFound && <ResultsItem uid={uid} isSignedIn={isSignedIn} movie={movie} /> }
+            { !isLoading && isMovieFound && sortByRate(movies).map((movie, q) => <ResultsItem key={q} uid={uid} isSignedIn={isSignedIn} movie={movie} />)}
             { localStorage.getItem("uid") !== null && searched.length ? <RecentlyHeader  currentTheme={currentTheme}>Recently searched</RecentlyHeader> : null }
             { searched.length < 1 && localStorage.getItem("uid") !== null ? loader : null}
+
             <RecentlySearched>
                 {searched.length > 0 && searched.map((movie) => 
                     <RecentlySearchedItem onClick={(e) => handleSubmit(e, movie.title, uid)} key={movie.addedAt}>

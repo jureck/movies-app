@@ -12,8 +12,7 @@ const Item = styled.div`
     min-height: 100px;
     background-color: ${({ currentTheme }) => theme[currentTheme].colors.secondary};
     padding: 10px;
-    margin-top: 20px;
-    margin-bottom: 150px;
+    margin-top: 10px;
     border-radius: ${theme.properties.radiusSmall};
     align-items: flex-start;
     justify-content: center;
@@ -158,13 +157,15 @@ const ResultsItem = ({ movie, isSignedIn, uid }) => {
                 const results = [];
                 snapshot.forEach(doc => {
                         if(doc.data()[uid]) {
-                            results.push(doc.data()[uid].title);
+                            results.push({
+                                title: doc.data()[uid].title,
+                                year: doc.data()[uid].year,
+                            });
                         }
                     }
                 );
                 if(results.length) {
-                    const onList = results.includes(title);
-                    setIsOnList(onList);
+                    setIsOnList(results.some((result) => result.title === title && result.year === year));
                 }
             }
         });   
@@ -173,7 +174,7 @@ const ResultsItem = ({ movie, isSignedIn, uid }) => {
             res();
         }
 
-    }, [title, uid]);
+    }, [title, year, uid]);
 
     const addToList = (movie, uid, isSignedIn, setErrorMessage) => {
         if(isSignedIn) {

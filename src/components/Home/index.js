@@ -19,7 +19,7 @@ const HeaderText = styled.p`
    margin-top: 100px;
 `
 const Sitename = styled.p`
-    font-family: 'Unlock';
+    font-family: Unlock;
     height: 80px;
     line-height: 80px;
     display: block;
@@ -52,8 +52,6 @@ const Home = () => {
     const {currentTheme} = useContext(ThemeContext);
     const [uid, setUid] = useState('');
     const [isSignedIn, setIsSignedIn] = useState(false);
-
-    
 
     React.useEffect(() => {
         auth().onAuthStateChanged((user) => {
