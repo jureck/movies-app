@@ -24,7 +24,7 @@ const Label = styled.label`
     font-size: ${theme.fonts.xs};
 `
 const Input = styled.input`
-    border: 0;
+    border: ${({ isError }) => isError ? "2px solid red" : "0"};
     height: 50px;
     border-radius: ${theme.properties.radiusSmall};
     font-size: ${theme.fonts.s};
@@ -35,17 +35,6 @@ const Input = styled.input`
     &:focus {
         border: 2px solid #008ffc;
     }
-
-    &[name="password"] {
-        border: ${({ passwordError }) => passwordError === "WRONG_PASSWORD" ? "2px solid red" : "0"};
-    }
-
-    &[name="email"] {
-        border: ${({ emailError }) => emailError === "WRONG_EMAIL" ? "2px solid red" : "0"};
-    }
-   
-        
- 
 `
 const Submit = styled.button`
     color: black;
@@ -101,25 +90,18 @@ const SignIn = () => {
     const [isPasswordHidden, setIsPasswordHidden] = useState(true);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [passwordError, setPasswordError] = useState('');
-    const [emailError, setEmailError] = useState('');
-
+    const [isAuthError, setIsAuthError] = useState(false);
+    
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setEmailError('');
-        setPasswordError('');
+        setIsAuthError(false);
         await auth().signInWithEmailAndPassword(email, password)
         .then((cred) => {
             localStorage.setItem("uid", cred.user.uid);
             window.location.href = `${basename}/`;
         })
-        .catch((err) => {
-            if(err.code === "auth/user-not-found") {
-                setEmailError("WRONG_EMAIL");
-            }
-            if(err.code === "auth/wrong-password") {
-                setPasswordError("WRONG_PASSWORD");
-            }
+        .catch(() => {
+            setIsAuthError(true);
         });
     }
 
@@ -142,10 +124,9 @@ const SignIn = () => {
                 value={email} 
                 type="email" 
                 name="email"
-                emailError={emailError}  
+                isError={isAuthError} 
                 currentTheme={currentTheme} 
             />
-            {emailError && <ErrorMessage>Email not found</ErrorMessage>}
             <Label 
                 htmlFor="password" 
                 currentTheme={currentTheme}
@@ -157,10 +138,9 @@ const SignIn = () => {
                     onChange={(e) => setPassword(e.target.value)} 
                     value={password} type={isPasswordHidden ? "password" : "text" } 
                     name="password" 
-                    passwordError={passwordError}
+                    isError={isAuthError}
                     currentTheme={currentTheme}
                 />
-                {passwordError && <ErrorMessage>Wrong password</ErrorMessage>}
                 <ShowPassword 
                     onClick={ () => setIsPasswordHidden(!isPasswordHidden) }
                 >
@@ -168,6 +148,7 @@ const SignIn = () => {
                         src={Eye}
                     />
                 </ShowPassword>
+                {isAuthError && <ErrorMessage>Invalid email or password</ErrorMessage>}
             </PasswordWrapper>
             <Submit 
                 type="submit" 
