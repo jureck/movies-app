@@ -180,49 +180,72 @@ const MainPage = ({ uid, isSignedIn}) => {
         setMovies([]);
         e.preventDefault();
         const result = await getDataFromApi(title, false);
-        if(result.Response === "True") {
+
+        if (result.Response === "True") {
             const results = result.Search;
+            let bestResult = { Ratings: [{ Value: "0/10" }] };
             results.map(async (result) => {
                 const movie = await getDataFromApi(null, true, result.imdbID);
-                if(movie.Type !== "game") setMovies((prevState) => [
-                    ...prevState,
-                    {
-                        title: movie.Title,
-                        year: movie.Year,
-                        rate: movie.Ratings.length > 0 ? movie.Ratings[0].Value : "-",
-                        duration: movie.Runtime,
-                        genres: movie.Genre,
-                        description: movie.Plot,
-                        img: movie.Poster === "N/A" ? NoPoster : movie.Poster,
-                }]);
+                if (movie.Type !== "game") {
+                    if (movie.Ratings[0].Value > bestResult.Ratings[0].Value)
+                        bestResult = movie;
+                    setMovies((prevState) => [
+                        ...prevState,
+                        {
+                            title: movie.Title,
+                            year: movie.Year,
+                            rate:
+                                movie.Ratings.length > 0
+                                    ? movie.Ratings[0].Value
+                                    : "-",
+                            duration: movie.Runtime,
+                            genres: movie.Genre,
+                            description: movie.Plot,
+                            img:
+                                movie.Poster === "N/A"
+                                    ? NoPoster
+                                    : movie.Poster,
+                        },
+                    ]);
+                }
             });
-        
-            setIsMovieFound(true);
+            const recentMovies = await db
+                .collection("history")
+                .orderBy("addedAt", "desc")
+                .limit(10)
+                .get();
+            const lastOfRecent = {
+                title: recentMovies.docs
+                    .map((doc) => doc.data()[uid]?.title)
+                    .filter((title) => title !== undefined)[0],
+                year: recentMovies.docs
+                    .map((doc) => doc.data()[uid]?.year)
+                    .filter((title) => title !== undefined)[0],
+            };
             const recentMovie = {
                 [uid]: {
-                    title: results[0].Title,
-                    img: results[0].Poster === "-" ? NoPoster : results[0].Poster,
-                    year: results[0].Year,
+                    title: bestResult.Title,
+                    img:
+                        bestResult.Poster === "-"
+                            ? NoPoster
+                            : bestResult.Poster,
+                    year: bestResult.Year,
                 },
                 addedAt: Date.now(),
+            };
+            if (
+                uid &&
+                lastOfRecent.title !== bestResult.Title &&
+                lastOfRecent.year !== bestResult.Year
+            ) {
+                db.collection("history").add(recentMovie);
             }
-            const recentMovies = await db.collection('history')
-                                        .orderBy("addedAt", "desc")
-                                        .limit(10)
-                                        .get();
-            const lastOfRecent = {
-                title: recentMovies.docs.map(doc => doc.data()[uid]?.title).filter(title => title !== undefined)[0],
-                year: recentMovies.docs.map(doc => doc.data()[uid]?.year).filter(title => title !== undefined)[0]
-            }
-            
-            if(uid && lastOfRecent.title !== results[0].Title && lastOfRecent.year !== results[0].Year) {
-                db.collection('history').add(recentMovie);
-            }
+            setIsMovieFound(true);
         } else {
             setIsMovieFound(false);
         }
         setIsLoading(false);
-    }
+    };
 
     
     const handleChange = (e) => {
