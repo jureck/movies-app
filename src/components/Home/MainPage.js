@@ -173,7 +173,36 @@ const MainPage = ({ uid, isSignedIn}) => {
         const response = await fetch(address);
         const result = await response.json();
         return result;
-    }    
+    }
+    
+    const getDataForEveryMovie = async (results) => {
+        let moviesToShow = [];
+        let bestResult = { Ratings: [{ Value: "0/10" }] };
+
+        await Promise.all(results.map(async (result) => {
+            const movie = await getDataFromApi(null, true, result.imdbID);
+            if (movie.Type !== "game") {
+                moviesToShow.push({
+                    title: movie.Title,
+                    year: movie.Year,
+                    rate:
+                        movie.Ratings.length > 0
+                            ? movie.Ratings[0].Value
+                            : "-",
+                    duration: movie.Runtime,
+                    genres: movie.Genre,
+                    description: movie.Plot,
+                    img:
+                        movie.Poster === "N/A"
+                            ? NoPoster
+                            : movie.Poster,
+                });
+                if (movie.Ratings[0]?.Value > bestResult.Ratings[0]?.Value)
+                    bestResult = movie;
+            }   
+        }));
+        return [moviesToShow, bestResult];
+    }
 
     const handleSubmit = async (e, title, uid) => {
         setIsLoading(true);
@@ -182,33 +211,9 @@ const MainPage = ({ uid, isSignedIn}) => {
         const result = await getDataFromApi(title, false);
 
         if (result.Response === "True") {
-            const results = result.Search;
-            let bestResult = { Ratings: [{ Value: "0/10" }] };
-            results.map(async (result) => {
-                const movie = await getDataFromApi(null, true, result.imdbID);
-                if (movie.Type !== "game") {
-                    if (movie.Ratings[0].Value > bestResult.Ratings[0].Value)
-                        bestResult = movie;
-                    setMovies((prevState) => [
-                        ...prevState,
-                        {
-                            title: movie.Title,
-                            year: movie.Year,
-                            rate:
-                                movie.Ratings.length > 0
-                                    ? movie.Ratings[0].Value
-                                    : "-",
-                            duration: movie.Runtime,
-                            genres: movie.Genre,
-                            description: movie.Plot,
-                            img:
-                                movie.Poster === "N/A"
-                                    ? NoPoster
-                                    : movie.Poster,
-                        },
-                    ]);
-                }
-            });
+            const results = result.Search;  
+            const [moviesToShow, bestResult] = await getDataForEveryMovie(results);
+            setMovies(moviesToShow);
             const recentMovies = await db
                 .collection("history")
                 .orderBy("addedAt", "desc")
@@ -241,6 +246,7 @@ const MainPage = ({ uid, isSignedIn}) => {
                 db.collection("history").add(recentMovie);
             }
             setIsMovieFound(true);
+            
         } else {
             setIsMovieFound(false);
         }
