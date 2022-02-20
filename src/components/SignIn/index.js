@@ -4,8 +4,8 @@ import { theme } from '../../themes/GlobalTheme';
 import Menu from '../Menu';
 import { ThemeContext } from '../../context/ThemeContext';
 import Eye from '../../assets/icons/eye.svg';
-import { auth } from '../../services/firebase/config';
-import { basename } from '../../App';
+import { useHistory } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext'; 
 
 const Form = styled.form`
     display: flex;
@@ -74,7 +74,9 @@ const ErrorMessage = styled.p`
     color: red;
     font-size: ${theme.fonts.xs};
 `
-const Redirector = styled.a`
+const Redirector = styled.span`
+    text-decoration: underline;
+    cursor: pointer;
     display: block;
     text-align: center;
     width: 100%;
@@ -82,23 +84,22 @@ const Redirector = styled.a`
     margin-top: 30px;
 `
 
-
-
-
 const SignIn = () => {
     const {currentTheme} = useContext(ThemeContext);
     const [isPasswordHidden, setIsPasswordHidden] = useState(true);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isAuthError, setIsAuthError] = useState(false);
+    const history = useHistory();
+    const { signIn } = useAuth();
     
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsAuthError(false);
-        await auth().signInWithEmailAndPassword(email, password)
+        signIn(email, password)
         .then((cred) => {
             localStorage.setItem("uid", cred.user.uid);
-            window.location.href = `${basename}/`;
+            history.push('/');
         })
         .catch(() => {
             setIsAuthError(true);
@@ -159,13 +160,13 @@ const SignIn = () => {
         </Form>
         <Redirector 
             currentTheme={currentTheme} 
-            href={`${basename}/#/Reset password/`}
+            onClick={() => history.push('/reset-password')}
         >
             Forgot password?
         </Redirector>
         <Redirector 
             currentTheme={currentTheme} 
-            href={`${basename}/#/Sign up/`}
+            onClick={() => history.push('/sign-up')}
         >
             Don't have an account?
         </Redirector>

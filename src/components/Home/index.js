@@ -1,9 +1,8 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 import { theme } from '../../themes/GlobalTheme';
 import MainPage from './MainPage';
 import Menu from '../Menu/index';
-import { auth } from '../../services/firebase/config';
 import { ThemeContext } from '../../context/ThemeContext';
 
 const Main = styled.div`
@@ -50,19 +49,6 @@ const Sitename = styled.p`
 
 const Home = () => {
     const {currentTheme} = useContext(ThemeContext);
-    const [uid, setUid] = useState('');
-    const [isSignedIn, setIsSignedIn] = useState(false);
-
-    React.useEffect(() => {
-        auth().onAuthStateChanged((user) => {
-            if(user) {
-                if(user.uid) {
-                    setUid(user.uid);
-                    setIsSignedIn(true);
-                }
-            }
-        });
-    }, []);
 
     return ( 
         <Main>
@@ -73,7 +59,7 @@ const Home = () => {
             <HeaderText currentTheme={currentTheme}>
                 Start searching
             </HeaderText>
-            <MainPage uid={uid} isSignedIn={isSignedIn} />
+            <MainPage />
         </Main>
     );
 }

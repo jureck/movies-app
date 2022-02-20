@@ -4,8 +4,8 @@ import { theme } from '../../themes/GlobalTheme';
 import Menu from '../Menu';
 import { ThemeContext } from '../../context/ThemeContext';
 import Eye from '../../assets/icons/eye.svg';
-import { auth } from '../../services/firebase/config';
-import { basename } from '../../App';
+import { useHistory } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 
 const Form = styled.form`
     display: flex;
@@ -85,7 +85,9 @@ const ErrorMessage = styled.p`
 const PasswordWrapper = styled.div`
     position: relative;
 `
-const Redirector = styled.a`
+const Redirector = styled.span`
+    text-decoration: underline;
+    cursor: pointer;
     display: block;
     text-align: center;
     width: 100%;
@@ -103,6 +105,8 @@ const SignUp = () => {
     const [username, setUsername] = useState('');
     const [emailError, setEmailError] = useState('');
     const [passwordError, setPasswordError] = useState('');
+    const history = useHistory();
+    const { signUp } = useAuth();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -112,13 +116,13 @@ const SignUp = () => {
         } else {
             setPasswordError('');
             setEmailError('');
-            await auth().createUserWithEmailAndPassword(email, password)
-            .then( async (cred) => {
+            signUp(email, username)
+            .then((cred) => {
                 if(cred.user) {
-                    await cred.user.updateProfile({displayName: username});
+                    cred.user.updateProfile({displayName: username});
                 }
             })
-            .then(() => window.location.href = `${basename}/`)
+            .then(() => history.push('/'))
             .catch(err => {
                 if(err.code === "auth/email-already-in-use") {
                     setEmailError('EMAIL_IN_USE');
@@ -195,7 +199,7 @@ const SignUp = () => {
         </Form>
         <Redirector 
             currentTheme={currentTheme} 
-            href={`${basename}/#/Sign in/`}
+            onClick={() => history.push('/sign-in')}
         >
             Have an account already?
         </Redirector>

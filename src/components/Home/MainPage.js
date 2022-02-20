@@ -9,6 +9,7 @@ import Loader from 'react-loader-spinner';
 import { ThemeContext } from '../../context/ThemeContext';
 import { db } from '../../services/firebase/config';
 import { apiAddress, apiKey } from '../../services/api/config'; 
+import { useAuth } from '../../context/AuthContext';
 
 const SearchBlock = styled.div`
     width: 80%;
@@ -157,7 +158,7 @@ const ItemYear = styled.p`
     font-size: ${theme.fonts.s};
 `
 
-const MainPage = ({ uid, isSignedIn}) => {
+const MainPage = () => {
 
     const loader = <Loader type="TailSpin" color={theme.colors.accent} height={200} width={100} timeout={20000} />;
     const {currentTheme} = useContext(ThemeContext);
@@ -167,6 +168,8 @@ const MainPage = ({ uid, isSignedIn}) => {
     const [isLoading, setIsLoading] = useState(false);
     const [isMovieFound, setIsMovieFound] = useState(true);
     const [searched, setSearched] = useState([]);
+    const { isSignedIn } = useAuth();
+    const uid = localStorage.getItem('uid');
 
     const getDataFromApi = async (title, isSpecific = true, imdbId) => {
         const address = `${apiAddress}?apikey=${apiKey}&${isSpecific ? "i" : "s"}=${isSpecific ? imdbId : title}`;
@@ -308,7 +311,7 @@ const MainPage = ({ uid, isSignedIn}) => {
             { searched.length < 1 && localStorage.getItem("uid") !== null ? loader : null}
 
             <RecentlySearched>
-                {searched.length > 0 && searched.map((movie) => 
+                {isSignedIn && searched.length > 0 && searched.map((movie) => 
                     <RecentlySearchedItem onClick={(e) => handleSubmit(e, movie.title, uid)} key={movie.addedAt}>
                         <ItemPoster src={movie.img} />
                         <ItemTitle currentTheme={currentTheme}>

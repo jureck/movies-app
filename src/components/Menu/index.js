@@ -1,13 +1,13 @@
 import React, { useState, useContext } from 'react';
 import styled from 'styled-components';
-import { basename } from '../../App';
 import { theme } from '../../themes/GlobalTheme';
 import MenuItem from './MenuItem';
 import { ThemeContext } from '../../context/ThemeContext';
 import SunImg from '../../assets/icons/light.svg';
 import MoonImg from '../../assets/icons/dark.svg';
 import User from '../../assets/icons/user.svg';
-import { auth } from '../../services/firebase/config';
+import { useHistory } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 
 const MainMenu = styled.div`
     background-color: ${({ currentTheme }) => theme[currentTheme].colors.secondary};
@@ -124,24 +124,9 @@ const Name = styled.p`
 const Menu = () => {
     const {currentTheme, setCurrentTheme} = useContext(ThemeContext);
     const [isOpen, setIsOpen] = useState(false);
-    const [isSignedIn, setIsSignedIn] = useState(false);
-    const [username, setUsername] = useState('');
-    let current = decodeURI(window.location.hash.slice(2, -1));
-
-    React.useEffect(() => {
-        auth().onAuthStateChanged((user) => {
-            if(user) {
-                setUsername(user.displayName);
-                localStorage.setItem("uid", user.uid);
-                if(user.uid) {
-                    setIsSignedIn(true);
-                }
-            }
-            else {
-                localStorage.removeItem("uid");
-            }
-        });
-    }, []);
+    const { isSignedIn, username } = useAuth();
+    const history = useHistory();
+    let current = history.location.pathname.split('-').join(' ').slice(1);
 
     const ToggleTheme = (currentTheme, setCurrentTheme) => {
         const newTheme = currentTheme === "light" ? "dark" : "light";
@@ -163,14 +148,14 @@ const Menu = () => {
                     onClick={() => setIsOpen(!isOpen)}
                     name="Home"
                     img="home.svg"
-                    path={`${basename}/`}
+                    path="/"
                     current={current}
                 />
                 {isSignedIn && <MenuItem
                     onClick={() => setIsOpen(!isOpen)} 
                     name="Watch list"
                     img="watch.svg"
-                    path={`${basename}/#/Watch list/`}
+                    path="/watch-list"
                     current={current}
                     />
                 }
@@ -185,7 +170,7 @@ const Menu = () => {
                             <MenuItem
                                 name="Sign out"
                                 img="signout.svg"
-                                path={`${basename}/`}
+                                path="/"
                                 current={current}
                                 signOut
                             />
@@ -195,13 +180,13 @@ const Menu = () => {
                             <MenuItem
                                 name="Sign in"
                                 img="signin.svg"
-                                path={`${basename}/#/Sign in/`}
+                                path="/sign-in"
                                 current={current}
                             />
                             <MenuItem
                                 name="Sign up"
                                 img="signup.svg"
-                                path={`${basename}/#/Sign up/`}
+                                path="/sign-up"
                                 current={current}
                             />
                         </>

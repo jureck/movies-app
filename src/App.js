@@ -9,27 +9,30 @@ import ResetPassword from './components/ResetPassword/index';
 import ScrollToTop from './components/ScrollToTop';
 import NotFound from './components/NotFound/index';
 import ThemeContextProvider from './context/ThemeContext';
-
-export const basename = process.env.PUBLIC_URL;
+import { AuthProvider } from './context/AuthContext';
 
 function App() {
 
   return (
-    <HashRouter basename={basename}>
+    <AuthProvider>
+    <HashRouter>
       <ScrollToTop>
         <ThemeContextProvider>
-          <GlobalStyle />
-          <Switch>
-            <Route exact path='/' component={Home} />
-            <Route path='/Watch list' component={WatchList} />
-            <Route path='/Sign up' component={SignUp} />
-            <Route path='/Sign in' component={SignIn} />
-            <Route path='/Reset password' component={ResetPassword} />
-            <Route component={NotFound} />
-          </Switch>
+          
+            <GlobalStyle />
+            <Switch>
+              <Route exact path='/' component={Home} />
+              <Route path='/watch-list' component={WatchList} />
+              <Route path='/sign-up' component={SignUp} />
+              <Route path='/sign-in' component={SignIn} />
+              <Route path='/reset-password' component={ResetPassword} />
+              <Route component={NotFound} />
+            </Switch>
+          
         </ThemeContextProvider>
       </ScrollToTop>
     </HashRouter> 
+    </AuthProvider>
   )
 }
 

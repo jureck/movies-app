@@ -4,7 +4,6 @@ import { theme } from '../../themes/GlobalTheme';
 import Menu from '../Menu';
 import { ThemeContext } from '../../context/ThemeContext';
 import { auth } from '../../services/firebase/config';
-import { basename } from '../../App';
 
 const Form = styled.form`
     display: flex;
@@ -108,9 +107,7 @@ const ResetPassword = () => {
     return ( 
         <>
 
-        <Menu 
-            current="Sign in"
-        />
+        <Menu />
         <HeroText currentTheme={currentTheme} >
             Reset your password
         </HeroText>
@@ -138,7 +135,7 @@ const ResetPassword = () => {
         </Form>
         <Redirector 
             currentTheme={currentTheme} 
-            href={`${basename}/#/Sign in/`}
+            href="/sign-in"
         >
             Sign in to your account
         </Redirector>

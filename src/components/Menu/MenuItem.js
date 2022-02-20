@@ -2,21 +2,23 @@ import React, { useContext } from 'react';
 import styled from 'styled-components';
 import { theme } from '../../themes/GlobalTheme';
 import { ThemeContext } from '../../context/ThemeContext';
-import { auth } from '../../services/firebase/config';
-import { basename } from '../../App';
+import { useHistory } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext'; 
 
-const Item = styled.a`
-    text-decoration: none;
+const Item = styled.li`
     width: 100%;
     height: 57px;
+    margin: 0;
+    cursor: pointer;
     color: ${({ currentTheme }) => theme[currentTheme].colors.syntax};
     font-size: ${theme.fonts.s};
     line-height: 57px;
     display: flex;
     flex-direction: row;
     align-items: center;
-    background-color: ${({ current, name, currentTheme }) => current === name ? `${theme[currentTheme].colors.primary}` : "none" };
+    background-color: ${({ current, name, currentTheme }) => current === name.toLowerCase() ? `${theme[currentTheme].colors.primary}` : "none" };
     font-weight: ${({ current, name }) => current === name ? "600" : "500"};
+    transition: all .1s ease-in-out;
 
     &:first-child {
         margin-top: 80px;
@@ -37,14 +39,28 @@ const Name = styled.p`
 
 const MenuItem = ({ img, name, current, path, signOut }) => {
     const {currentTheme} = useContext(ThemeContext);
-    return ( 
-        <Item onClick={signOut ? () => auth().signOut().then(() => window.location.href = `${basename}/`) : null} currentTheme={currentTheme} href={path} current={current === '' ? "Home" : current} name={name} >
-                <Icon
-                    src={require(`../../assets/icons/${img}`)}
-                />    
-                <Name>
-                    {name}
-                </Name>
+    const history = useHistory();
+    const { signOut: logout } = useAuth();
+
+    const handleClick = () => {
+        if(signOut) {
+            logout()
+            .then(() => history.push('/'));
+        } else {
+            history.push(path);
+        }
+    }
+
+    return (
+        <Item
+            onClick={handleClick}
+            currentTheme={currentTheme}
+            href={path}
+            current={current === "" ? "Home" : current}
+            name={name}
+        >
+            <Icon src={require(`../../assets/icons/${img}`)} />
+            <Name>{name}</Name>
         </Item>
     );
 }

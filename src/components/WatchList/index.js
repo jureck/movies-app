@@ -147,50 +147,70 @@ const WatchList = () => {
         
     }
     
-    return ( 
+    return (
         <Main>
             <Menu />
-            { isWatchlistEmpty && <Error currentTheme={currentTheme}> Nothing found :( </Error> }
-            { isLoading && loader }
-            { !isLoading && !isWatchlistEmpty && movies.map((movie) => <WatchListItem
-                key={movie.title}
-                title={movie.title}
-                year={movie.year}
-                duration={movie.duration}
-                genres={movie.genres}
-                docs={docs}
-                />) }
-            {movies.length > 0 &&
-            <>
-                <Sort>
-                    <SortIcon onClick={() => setIsSortOpen(!isSortOpen)} src={currentTheme === "light" ? SortBlack : SortWhite } />
-                </Sort>
-                <SortOptions onClick={() => setIsSortOpen(!isSortOpen)} currentTheme={currentTheme} isSortOpen={isSortOpen}>
-                    <SortOption 
-                        currentTheme={currentTheme} 
-                        onClick={() => sortMovies(movies, setMovies, 'a-z')}
+            {isWatchlistEmpty && (
+                <Error currentTheme={currentTheme}> Nothing found :( </Error>
+            )}
+            {isLoading && loader}
+            {!isLoading &&
+                !isWatchlistEmpty &&
+                movies.map((movie) => (
+                    <WatchListItem
+                        key={movie.title}
+                        title={movie.title}
+                        year={movie.year}
+                        duration={movie.duration}
+                        genres={movie.genres}
+                        docs={docs}
+                    />
+                ))}
+            {movies.length > 0 && (
+                <>
+                    <Sort>
+                        <SortIcon
+                            onClick={() => setIsSortOpen(!isSortOpen)}
+                            src={
+                                currentTheme === "light" ? SortBlack : SortWhite
+                            }
+                        />
+                    </Sort>
+                    <SortOptions
+                        onClick={() => setIsSortOpen(!isSortOpen)}
+                        currentTheme={currentTheme}
+                        isSortOpen={isSortOpen}
                     >
-                        A-Z
-                    </SortOption>
-                    <SortOption 
-                        currentTheme={currentTheme} 
-                        onClick={() => sortMovies(movies, setMovies, 'earliest')}
-                    >
-                        Earliest added
-                    </SortOption>
-                    <SortOption 
-                        currentTheme={currentTheme} 
-                        onClick={() => sortMovies(movies, setMovies, 'latest')}
-                    >
-                        Latest added
-                    </SortOption>
-                </SortOptions>
-                <CloseBox onClick={() => setIsSortOpen(!isSortOpen)} isSortOpen={isSortOpen} />
-            </>
-            }
-
+                        <SortOption
+                            currentTheme={currentTheme}
+                            onClick={() => sortMovies(movies, setMovies, "a-z")}
+                        >
+                            A-Z
+                        </SortOption>
+                        <SortOption
+                            currentTheme={currentTheme}
+                            onClick={() =>
+                                sortMovies(movies, setMovies, "earliest")
+                            }
+                        >
+                            Earliest added
+                        </SortOption>
+                        <SortOption
+                            currentTheme={currentTheme}
+                            onClick={() =>
+                                sortMovies(movies, setMovies, "latest")
+                            }
+                        >
+                            Latest added
+                        </SortOption>
+                    </SortOptions>
+                    <CloseBox
+                        onClick={() => setIsSortOpen(!isSortOpen)}
+                        isSortOpen={isSortOpen}
+                    />
+                </>
+            )}
         </Main>
-        
     );
 }
  
