@@ -116,7 +116,7 @@ const SignUp = () => {
         } else {
             setPasswordError('');
             setEmailError('');
-            signUp(email, username)
+            signUp(email, password)
             .then((cred) => {
                 if(cred.user) {
                     cred.user.updateProfile({displayName: username});
