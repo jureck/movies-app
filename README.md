@@ -3,6 +3,11 @@ This app allows you to search for films or series and - if you have an account -
 
 ## Demo
 https://jureck.github.io/movies-app/#/
+
+Sample account login data:
+email: user@movies-app.com
+password: 123123
+
 ## Details
 Firebase - for saving watchlist items in cloud.<br>
 Context API - for theme switching.<br>
