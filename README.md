@@ -13,14 +13,13 @@ password: `123123`
 ![App Screenshot](https://iili.io/jJsyUg.jpg)
 **Light mode**
 ![App Screenshot](https://iili.io/jJsp0F.jpg)
-**Mobile view**
-![App Screenshot](https://iili.io/jJsDiP.jpg)
 **Searching results**
 ![App Screenshot](https://iili.io/jJsmf1.jpg)
 **Creating an account**
 ![App Screenshot](https://iili.io/jJLHJa.jpg)
 **User's watchlist**
 ![App Screenshot](https://iili.io/jJLJ5J.jpg)
+![App Screenshot](https://iili.io/jJsDiP.jpg)
 
 
 ## Details
