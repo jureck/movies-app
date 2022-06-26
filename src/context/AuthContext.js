@@ -12,6 +12,7 @@ export const AuthProvider = ({ children }) => {
 
     const [username, setUsername] = useState();
     const [isSignedIn, setIsSignedIn] = useState();
+    const [uid, setUid] = useState();
 
     const signUp = (email, password) => {
         return auth().createUserWithEmailAndPassword(email, password);
@@ -29,13 +30,15 @@ export const AuthProvider = ({ children }) => {
         const cleanup = auth().onAuthStateChanged((user) => {
             if(user) {
                 setUsername(user.displayName);
-                localStorage.setItem("uid", user.uid);
+                // localStorage.setItem("uid", user.uid);
+                setUid(user.uid);
                 if(user.uid) {
                     setIsSignedIn(true);
                 }
             }
             else {
-                localStorage.removeItem("uid");
+                // localStorage.removeItem("uid");
+                setUid(null);
                 setIsSignedIn(false);
             }
         })
@@ -45,6 +48,7 @@ export const AuthProvider = ({ children }) => {
     
     const value = {
         username,
+        uid,
         isSignedIn,
         signUp,
         signIn,

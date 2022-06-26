@@ -126,7 +126,7 @@ const Menu = () => {
     const [isOpen, setIsOpen] = useState(false);
     const { isSignedIn, username } = useAuth();
     const history = useHistory();
-    let current = history.location.pathname.split('-').join(' ').slice(1);
+    let current = history?.location.pathname.split('-').join(' ').slice(1); // e.g. 'watch-list' => 'watch list'
 
     const ToggleTheme = (currentTheme, setCurrentTheme) => {
         const newTheme = currentTheme === "light" ? "dark" : "light";

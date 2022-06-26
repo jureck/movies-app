@@ -56,7 +56,7 @@ const MenuItem = ({ img, name, current, path, signOut }) => {
             onClick={handleClick}
             currentTheme={currentTheme}
             href={path}
-            current={current === "" ? "Home" : current}
+            current={current === "" ? "home" : current}
             name={name}
         >
             <Icon src={require(`../../assets/icons/${img}`)} />

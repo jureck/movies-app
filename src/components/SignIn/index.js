@@ -93,12 +93,11 @@ const SignIn = () => {
     const history = useHistory();
     const { signIn } = useAuth();
     
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
         setIsAuthError(false);
         signIn(email, password)
-        .then((cred) => {
-            localStorage.setItem("uid", cred.user.uid);
+        .then(() => {
             history.push('/');
         })
         .catch(() => {

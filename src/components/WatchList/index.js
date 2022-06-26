@@ -9,6 +9,7 @@ import Loader from 'react-loader-spinner';
 import { ThemeContext } from '../../context/ThemeContext';
 import SortBlack from '../../assets/icons/sortblack.svg';
 import SortWhite from '../../assets/icons/sortwhite.svg';
+import { useAuth } from '../../context/AuthContext';
 
 const Main = styled.main`
     display: flex;
@@ -79,7 +80,7 @@ const WatchList = () => {
     const [movies, setMovies] = useState([]);
     const [isSortOpen, setIsSortOpen] = useState(false);
     const [docs, setDocs] = useState([]);
-    const uid = localStorage.getItem("uid");
+    const { uid } = useAuth();  
 
     const [isLoading, setIsLoading] = useState(true);
     const [isWatchlistEmpty, setIsWatchlistEmpty] = useState(false);

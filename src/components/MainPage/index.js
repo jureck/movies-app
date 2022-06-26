@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import styled from 'styled-components';
 import SearchIcon from '../../assets/icons/search.svg';
 import NoPoster from '../../assets/icons/noPoster.png';
-import ResultsItem from './ResultsItem';
+import ResultsItem from '../ResultsItem/index';
 import { theme } from '../../themes/GlobalTheme';
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import Loader from 'react-loader-spinner';
@@ -10,6 +10,7 @@ import { ThemeContext } from '../../context/ThemeContext';
 import { db } from '../../services/firebase/config';
 import { apiAddress, apiKey } from '../../services/api/config'; 
 import { useAuth } from '../../context/AuthContext';
+import Menu from '../Menu/index';
 
 const SearchBlock = styled.div`
     width: 80%;
@@ -158,6 +159,50 @@ const ItemYear = styled.p`
     font-size: ${theme.fonts.s};
 `
 
+const Sitename = styled.p`
+    font-family: Unlock;
+    height: 80px;
+    line-height: 80px;
+    display: block;
+    color: #d30303ee;
+    font-size: 60px;
+    text-transform: uppercase;
+    position: absolute;
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+    
+    @media (max-width: 900px) {
+        font-size: 40px;
+        line-height: 50px;
+        height: 60px;
+    }
+    @media (max-width: 400px) {
+        font-size: 30px;
+        line-height: 50px;
+        height: 60px;
+    }
+    @media (max-width: 300px) {
+        font-size: 20px;
+        line-height: 50px;
+        height: 60px;
+    }
+`
+
+const HeaderText = styled.p`
+   font-size: ${theme.fonts.xl};
+   color: ${({ currentTheme }) => theme[currentTheme].colors.syntax};
+   text-align: center;
+   margin-top: 100px;
+`
+
+const Main = styled.div`
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+    align-items: center;
+`
+
 const MainPage = () => {
 
     const loader = <Loader type="TailSpin" color={theme.colors.accent} height={200} width={100} timeout={20000} />;
@@ -168,8 +213,7 @@ const MainPage = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [isMovieFound, setIsMovieFound] = useState(true);
     const [searched, setSearched] = useState([]);
-    const { isSignedIn } = useAuth();
-    const uid = localStorage.getItem('uid');
+    const { isSignedIn, uid } = useAuth();
 
     const getDataFromApi = async (title, isSpecific = true, imdbId) => {
         const address = `${apiAddress}?apikey=${apiKey}&${isSpecific ? "i" : "s"}=${isSpecific ? imdbId : title}`;
@@ -295,7 +339,15 @@ const MainPage = () => {
     }
 
     return ( 
-        <>
+        <Main>
+            <Menu />
+            <Sitename currentTheme={currentTheme}>
+                movies-app   
+            </Sitename>
+            <HeaderText currentTheme={currentTheme}>
+                Start searching
+            </HeaderText>
+
             <SearchBlock>
                 <Form onSubmit={(e) => handleSubmit(e, title, uid)}>
                     <SearchInput placeholder="Search" currentTheme={currentTheme} value={title} onChange={(e) => handleChange(e)}/>
@@ -307,8 +359,8 @@ const MainPage = () => {
             { !isMovieFound && <Error currentTheme={currentTheme}> Nothing found :( </Error> }
             { isLoading && loader }
             { !isLoading && isMovieFound && sortByRate(movies).map((movie, q) => <ResultsItem key={q} uid={uid} isSignedIn={isSignedIn} movie={movie} />)}
-            { localStorage.getItem("uid") !== null && searched.length ? <RecentlyHeader  currentTheme={currentTheme}>Recently searched</RecentlyHeader> : null }
-            { searched.length < 1 && localStorage.getItem("uid") !== null ? loader : null}
+            { uid && searched.length ? <RecentlyHeader  currentTheme={currentTheme}>Recently searched</RecentlyHeader> : null }
+            { searched.length < 1 && uid ? loader : null}
 
             <RecentlySearched>
                 {isSignedIn && searched.length > 0 && searched.map((movie) => 
@@ -323,7 +375,7 @@ const MainPage = () => {
                     </RecentlySearchedItem>
                 )}
             </RecentlySearched>
-        </>
+        </Main>
 
     );
 }

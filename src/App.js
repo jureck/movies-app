@@ -1,6 +1,5 @@
 import React from 'react';
 import { HashRouter, Route, Switch } from 'react-router-dom';
-import Home from './components/Home/index';
 import GlobalStyle from './components/GlobalStyle';
 import WatchList from './components/WatchList/index';
 import SignUp from './components/SignUp/index';
@@ -10,6 +9,7 @@ import ScrollToTop from './components/ScrollToTop';
 import NotFound from './components/NotFound/index';
 import ThemeContextProvider from './context/ThemeContext';
 import { AuthProvider } from './context/AuthContext';
+import MainPage from './components/MainPage';
 
 function App() {
 
@@ -21,7 +21,7 @@ function App() {
           
             <GlobalStyle />
             <Switch>
-              <Route exact path='/' component={Home} />
+              <Route exact path='/' component={MainPage} />
               <Route path='/watch-list' component={WatchList} />
               <Route path='/sign-up' component={SignUp} />
               <Route path='/sign-in' component={SignIn} />
